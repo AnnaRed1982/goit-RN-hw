@@ -21,7 +21,7 @@ SplashScreen.preventAutoHideAsync();
 
 const initialState = {
   name: "",
-  email: "", //сделать ввод с маленькой буквы
+  email: "",
   password: "",
 };
 
@@ -31,8 +31,25 @@ export default function LoginScreen() {
     "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
     "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
   });
+
   const [state, setState] = useState(initialState);
   const [hidePass, setHidePass] = useState(true);
+  const [isFocused, setIsFocused] = useState({
+    name: false,
+    email: false,
+    phone: false,
+  });
+
+  const handleInputFocus = (textinput) => {
+    setIsFocused({
+      [textinput]: true,
+    });
+  };
+  const handleInputBlur = (textinput) => {
+    setIsFocused({
+      [textinput]: false,
+    });
+  };
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -46,7 +63,6 @@ export default function LoginScreen() {
 
   const onLogin = () => {
     // Alert.alert("Credentials", `${name} + ${password}`);
-
     Keyboard.dismiss();
     console.log("Credentials", state);
     setState(initialState);
@@ -58,26 +74,48 @@ export default function LoginScreen() {
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
+        <View style={styles.boxFoto}></View>
+
         <Text style={styles.title}>Registration</Text>
 
         <View style={styles.inputContainer}>
           <TextInput
             value={state.name}
-            autoCapitalize="none"
             onChangeText={(value) =>
               setState((prevState) => ({ ...prevState, name: value }))
             }
             placeholder="Login"
-            style={styles.input}
+            autoCapitalize="none"
+            onFocus={() => {
+              handleInputFocus("name");
+            }}
+            onBlur={() => {
+              handleInputBlur("name");
+            }}
+            style={
+              isFocused.name
+                ? [styles.input, { borderColor: "#FF6C00" }]
+                : styles.input
+            }
           />
           <TextInput
-            autoCapitalize="none"
             value={state.email}
             onChangeText={(value) =>
               setState((prevState) => ({ ...prevState, email: value }))
             }
             placeholder="Email adress"
-            style={styles.input}
+            autoCapitalize="none"
+            onFocus={() => {
+              handleInputFocus("email");
+            }}
+            onBlur={() => {
+              handleInputBlur("email");
+            }}
+            style={
+              isFocused.email
+                ? [styles.input, { borderColor: "#FF6C00" }]
+                : styles.input
+            }
           />
           <TextInput
             value={state.password}
@@ -86,14 +124,17 @@ export default function LoginScreen() {
             }
             placeholder="Password"
             secureTextEntry={hidePass ? true : false}
-            style={styles.input}
-            // right={
-            //   <TouchableOpacity onPress={() => setHidePass(!hidePass)}>
-            //     <Text style={styles.inputBtn}>
-            //       {hidePass ? "Show" : "Hide"}
-            //     </Text>
-            //   </TouchableOpacity>
-            // }
+            onFocus={() => {
+              handleInputFocus("password");
+            }}
+            onBlur={() => {
+              handleInputBlur("password");
+            }}
+            style={
+              isFocused.password
+                ? [styles.input, { borderColor: "#FF6C00" }]
+                : styles.input
+            }
           />
 
           <TouchableOpacity onPress={() => setHidePass(!hidePass)}>
@@ -125,6 +166,17 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
+  boxFoto: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    left: 120, // поменять через %%
+    top: -152,
+    // transform: 'translateX(50px)',
+
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
   title: {
     color: 212121,
 
@@ -132,7 +184,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
-    // letterSpacing: 0.01em,
+    // letterSpacing: "0.01em",
 
     marginBottom: 33,
   },
@@ -161,6 +213,7 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#BDBDBD",
   },
+
   inputBtn: {
     color: "#1B4371",
 
