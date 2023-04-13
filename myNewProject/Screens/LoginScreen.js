@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -14,24 +14,44 @@ import {
   Button,
 } from "react-native";
 
-export default function LoginScreen() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
-  const nameHandler = (text) => setName(text);
-  const emailHandler = (text) => setEmail(text); //сделать ввод с маленькой буквы
-  const passwordHandler = (text) => setPassword(text);
+SplashScreen.preventAutoHideAsync();
+
+const initialState = {
+  name: "",
+  email: "", //сделать ввод с маленькой буквы
+  password: "",
+};
+
+export default function LoginScreen() {
+  const [fontsLoaded] = useFonts({
+    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
+    "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
+  });
+  const [state, setState] = useState(initialState);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const onLogin = () => {
     // Alert.alert("Credentials", `${name} + ${password}`);
-    console.log("Credentials", `${name}+ ${email} + ${password}`);
-    setName("");
-    setEmail("");
-    setPassword("");
+
+    Keyboard.dismiss();
+    console.log("Credentials", state);
+    setState(initialState);
   };
   return (
-    <View style={styles.form}>
+    <View style={styles.form} onLayout={onLayoutRootView}>
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
@@ -39,35 +59,35 @@ export default function LoginScreen() {
 
         <View style={styles.inputContainer}>
           <TextInput
-            value={name}
-            onChangeText={nameHandler}
+            value={state.name}
+            onChangeText={(value) =>
+              setState((prevState) => ({ ...prevState, name: value }))
+            }
             placeholder="Login"
             style={styles.input}
           />
           <TextInput
-            value={email}
-            onChangeText={emailHandler}
+            value={state.email}
+            onChangeText={(value) =>
+              setState((prevState) => ({ ...prevState, email: value }))
+            }
             placeholder="Email adress"
             style={styles.input}
           />
           <TextInput
-            value={password}
-            onChangeText={passwordHandler}
+            value={state.password}
+            onChangeText={(value) =>
+              setState((prevState) => ({ ...prevState, password: value }))
+            }
             placeholder="Password"
             secureTextEntry={true}
             style={styles.input}
           />
         </View>
 
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity style={styles.btn} onPress={onLogin}>
           <Text style={styles.btnText}>Register</Text>
         </TouchableOpacity>
-
-        {/* <Button
-          title={"Registration"}
-          //   style={styles.register}
-          onPress={onLogin}
-        /> */}
 
         <Text style={styles.text}>Already have an account? Log in</Text>
       </KeyboardAvoidingView>
@@ -92,8 +112,7 @@ const styles = StyleSheet.create({
   title: {
     color: 212121,
 
-    fontFamily: "Roboto",
-    fontWeight: 500,
+    fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
@@ -121,8 +140,7 @@ const styles = StyleSheet.create({
     height: 50,
     //marginHorizontal
 
-    fontFamily: "Roboto",
-    // fontWeight: 400,
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: "#BDBDBD",
@@ -141,8 +159,7 @@ const styles = StyleSheet.create({
   btnText: {
     color: "#FFFFFF",
 
-    fontFamily: "Roboto",
-    fontWeight: 400,
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
@@ -151,8 +168,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#1B4371",
 
-    fontFamily: "Roboto",
-    fontWeight: 400,
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
