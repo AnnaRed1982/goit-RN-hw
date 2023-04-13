@@ -32,6 +32,7 @@ export default function LoginScreen() {
     "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
   });
   const [state, setState] = useState(initialState);
+  const [hidePass, setHidePass] = useState(true);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -49,7 +50,9 @@ export default function LoginScreen() {
     Keyboard.dismiss();
     console.log("Credentials", state);
     setState(initialState);
+    setHidePass(true);
   };
+
   return (
     <View style={styles.form} onLayout={onLayoutRootView}>
       <KeyboardAvoidingView
@@ -60,6 +63,7 @@ export default function LoginScreen() {
         <View style={styles.inputContainer}>
           <TextInput
             value={state.name}
+            autoCapitalize="none"
             onChangeText={(value) =>
               setState((prevState) => ({ ...prevState, name: value }))
             }
@@ -67,6 +71,7 @@ export default function LoginScreen() {
             style={styles.input}
           />
           <TextInput
+            autoCapitalize="none"
             value={state.email}
             onChangeText={(value) =>
               setState((prevState) => ({ ...prevState, email: value }))
@@ -80,13 +85,24 @@ export default function LoginScreen() {
               setState((prevState) => ({ ...prevState, password: value }))
             }
             placeholder="Password"
-            secureTextEntry={true}
+            secureTextEntry={hidePass ? true : false}
             style={styles.input}
+            // right={
+            //   <TouchableOpacity onPress={() => setHidePass(!hidePass)}>
+            //     <Text style={styles.inputBtn}>
+            //       {hidePass ? "Show" : "Hide"}
+            //     </Text>
+            //   </TouchableOpacity>
+            // }
           />
+
+          <TouchableOpacity onPress={() => setHidePass(!hidePass)}>
+            <Text style={styles.inputBtn}>{hidePass ? "Show" : "Hide"}</Text>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.btn} onPress={onLogin}>
-          <Text style={styles.btnText}>Register</Text>
+          <Text style={styles.btnTitle}>Register</Text>
         </TouchableOpacity>
 
         <Text style={styles.text}>Already have an account? Log in</Text>
@@ -145,6 +161,18 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#BDBDBD",
   },
+  inputBtn: {
+    color: "#1B4371",
+
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    textAlign: "right",
+    position: "absolute",
+    right: 20,
+    bottom: 32,
+  },
+
   btn: {
     padding: 16,
     paddingBottom: 16,
@@ -156,7 +184,7 @@ const styles = StyleSheet.create({
 
     marginBottom: 16,
   },
-  btnText: {
+  btnTitle: {
     color: "#FFFFFF",
 
     fontFamily: "Roboto-Regular",
