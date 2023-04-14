@@ -25,7 +25,6 @@ import * as SplashScreen from "expo-splash-screen"; //fonts
 SplashScreen.preventAutoHideAsync(); //fonts
 
 const initialState = {
-  name: "",
   email: "",
   password: "",
 };
@@ -114,7 +113,6 @@ export default function LoginScreen() {
               : styles.inputContainer
           }
         >
-         
           <TextInput
             value={state.email}
             onChangeText={(value) =>
@@ -191,7 +189,6 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
-  
 
   title: {
     color: "#212121",

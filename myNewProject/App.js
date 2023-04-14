@@ -36,18 +36,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "flex-end",
-
-    // width: "100%",
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   image: {
     position: "absolute",
     width: "100%",
     top: 0,
-    // flex: 1,
-    // resizeMode: "cover",
-    // justifyContent: "flex-end",
-    // alignItems: "center",
   },
 });
