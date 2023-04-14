@@ -24,9 +24,8 @@ export default function App() {
           style={styles.image}
         />
 
-        <LoginScreen />
-
-        {/* <RegistrationScreen/> */}
+        <RegistrationScreen />
+        {/* <LoginScreen /> */}
       </View>
     </TouchableWithoutFeedback>
   );

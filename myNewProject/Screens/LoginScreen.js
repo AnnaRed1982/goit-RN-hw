@@ -4,23 +4,25 @@ import {
   View,
   Text,
   Image,
-  ImageBackground,
   TextInput,
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   Alert,
   Button,
 } from "react-native";
 
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
+
 import RegistrationScreen from "./RegistrationScreen";
 
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font"; //fonts
+import * as SplashScreen from "expo-splash-screen"; //fonts
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync(); //fonts
 
 const initialState = {
   name: "",
@@ -33,28 +35,27 @@ export default function LoginScreen() {
     "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
     "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
-  });
+  }); //fonts
 
   const [state, setState] = useState(initialState);
-  const [hidePass, setHidePass] = useState(true);
+  const [hidePass, setHidePass] = useState(true); //password
   const [isFocused, setIsFocused] = useState({
-    name: false,
     email: false,
     password: false,
-  });
-  const [isKeyboardActive, setIsKeyboardActive] = useState(false);
+  }); //input
+  const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
       () => {
-        setIsKeyboardActive(true); // or some other action
+        setIsKeyboardActive(true);
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
       "keyboardDidHide",
       () => {
-        setIsKeyboardActive(false); // or some other action
+        setIsKeyboardActive(false);
       }
     );
 
@@ -65,6 +66,7 @@ export default function LoginScreen() {
   }, []);
 
   const handleInputFocus = (textinput) => {
+    //input
     setIsFocused({
       [textinput]: true,
     });
@@ -76,6 +78,7 @@ export default function LoginScreen() {
   };
 
   const onLayoutRootView = useCallback(async () => {
+    //fonts
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
     }
@@ -101,22 +104,9 @@ export default function LoginScreen() {
       onLayout={onLayoutRootView}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        behavior={Platform.OS == "ios" ? "padding" : undefined}
       >
-        <View style={styles.boxFoto}>
-          <TouchableOpacity
-            style={styles.boxFotoBtn}
-            // onPress={}
-          >
-            <Image
-              style={styles.boxFotoBtnUnion}
-              source={require("../assets/images/Union.png")}
-            />
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.title}>Registration</Text>
-
+        <Text style={styles.title}>Log in</Text>
         <View
           style={
             isKeyboardActive
@@ -124,25 +114,7 @@ export default function LoginScreen() {
               : styles.inputContainer
           }
         >
-          <TextInput
-            value={state.name}
-            onChangeText={(value) =>
-              setState((prevState) => ({ ...prevState, name: value }))
-            }
-            placeholder="Login"
-            autoCapitalize="none"
-            onFocus={() => {
-              handleInputFocus("name");
-            }}
-            onBlur={() => {
-              handleInputBlur("name");
-            }}
-            style={
-              isFocused.name
-                ? [styles.input, { borderColor: "#FF6C00" }]
-                : styles.input
-            }
-          />
+         
           <TextInput
             value={state.email}
             onChangeText={(value) =>
@@ -186,21 +158,19 @@ export default function LoginScreen() {
             <Text style={styles.inputBtn}>{hidePass ? "Show" : "Hide"}</Text>
           </TouchableOpacity>
         </View>
-
         <TouchableOpacity
           style={isKeyboardActive ? { display: "none" } : styles.btn}
           onPress={onLogin}
         >
-          <Text style={styles.btnTitle}>Register</Text>
+          <Text style={styles.btnTitle}>Log in</Text>
         </TouchableOpacity>
-
         <TouchableOpacity
           style={
             isKeyboardActive ? [{ display: "none" }] : [{ display: "flex" }]
           }
           // onPress={() => navigation.navigate("RegistrationScreen")}
         >
-          <Text style={styles.text}>Already have an account? Log in</Text>
+          <Text style={styles.text}>Don't have an account? Register</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </View>
@@ -216,51 +186,21 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
 
-    paddingTop: 92,
-    paddingBottom: 45,
+    paddingTop: 32,
+    paddingBottom: 111,
     paddingLeft: 16,
     paddingRight: 16,
   },
-  boxFoto: {
-    position: "absolute",
-    width: 120,
-    height: 120,
-    left: 120, // поменять через %%
-    top: -152,
-    // transform: 'translateX(50px)',
-
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-  },
-  boxFotoBtn: {
-    position: "absolute",
-    width: 25,
-    height: 25,
-    left: 106, // поменять через %%
-    top: 80,
-    // transform: 'translateX(50px)',
-
-    backgroundColor: "#fff",
-    borderColor: "#FF6C00",
-    borderWidth: 1,
-    borderRadius: 25 / 2,
-
-    padding: 11 / 2,
-    // borderRadius: 50%,
-  },
-  boxFotoBtnUnion: {
-    width: 13,
-    height: 13,
-  },
+  
 
   title: {
-    color: 212121,
+    color: "#212121",
 
     fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
-    // letterSpacing: "0.01em",
+    letterSpacing: 0.01,
 
     marginBottom: 33,
   },
@@ -303,7 +243,7 @@ const styles = StyleSheet.create({
   },
 
   btn: {
-    padding: 16,
+    paddingTop: 16,
     paddingBottom: 16,
     paddingLeft: 32,
     paddingRight: 32,
