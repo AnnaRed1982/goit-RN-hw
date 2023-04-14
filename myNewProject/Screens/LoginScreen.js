@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   View,
   Text,
+  Image,
   ImageBackground,
   TextInput,
   TouchableWithoutFeedback,
@@ -13,6 +14,8 @@ import {
   Alert,
   Button,
 } from "react-native";
+
+import RegistrationScreen from "./RegistrationScreen";
 
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -37,8 +40,29 @@ export default function LoginScreen() {
   const [isFocused, setIsFocused] = useState({
     name: false,
     email: false,
-    phone: false,
+    password: false,
   });
+  const [isKeyboardActive, setIsKeyboardActive] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardActive(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardActive(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const handleInputFocus = (textinput) => {
     setIsFocused({
@@ -70,15 +94,36 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.form} onLayout={onLayoutRootView}>
+    <View
+      style={
+        isKeyboardActive ? [styles.form, { paddingBottom: 32 }] : styles.form
+      }
+      onLayout={onLayoutRootView}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
-        <View style={styles.boxFoto}></View>
+        <View style={styles.boxFoto}>
+          <TouchableOpacity
+            style={styles.boxFotoBtn}
+            // onPress={}
+          >
+            <Image
+              style={styles.boxFotoBtnUnion}
+              source={require("../assets/images/Union.png")}
+            />
+          </TouchableOpacity>
+        </View>
 
         <Text style={styles.title}>Registration</Text>
 
-        <View style={styles.inputContainer}>
+        <View
+          style={
+            isKeyboardActive
+              ? [styles.inputContainer, { marginBottom: 0 }]
+              : styles.inputContainer
+          }
+        >
           <TextInput
             value={state.name}
             onChangeText={(value) =>
@@ -142,11 +187,21 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.btn} onPress={onLogin}>
+        <TouchableOpacity
+          style={isKeyboardActive ? { display: "none" } : styles.btn}
+          onPress={onLogin}
+        >
           <Text style={styles.btnTitle}>Register</Text>
         </TouchableOpacity>
 
-        <Text style={styles.text}>Already have an account? Log in</Text>
+        <TouchableOpacity
+          style={
+            isKeyboardActive ? [{ display: "none" }] : [{ display: "flex" }]
+          }
+          // onPress={() => navigation.navigate("RegistrationScreen")}
+        >
+          <Text style={styles.text}>Already have an account? Log in</Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </View>
   );
@@ -177,6 +232,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },
+  boxFotoBtn: {
+    position: "absolute",
+    width: 25,
+    height: 25,
+    left: 106, // поменять через %%
+    top: 80,
+    // transform: 'translateX(50px)',
+
+    backgroundColor: "#fff",
+    borderColor: "#FF6C00",
+    borderWidth: 1,
+    borderRadius: 25 / 2,
+
+    padding: 11 / 2,
+    // borderRadius: 50%,
+  },
+  boxFotoBtnUnion: {
+    width: 13,
+    height: 13,
+  },
+
   title: {
     color: 212121,
 
