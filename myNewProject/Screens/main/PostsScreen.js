@@ -1,3 +1,4 @@
+import React from "react";
 import {
   StyleSheet,
   Image,
@@ -16,9 +17,9 @@ import {
 
 export default function PostsScreen() {
   return (
-    <View>
-      <Text>PostsScreen</Text>
+    <View style={{ backgroundColor: "#FFFFFF" }}>
+      {/* <Text>PostsScreen</Text> */}
     </View>
   );
 }
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({ container: { backgroundColor: "#fff" } });

@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { enableScreens } from "react-native-screens";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import {
   StyleSheet,
@@ -22,12 +23,7 @@ import * as SplashScreen from "expo-splash-screen"; //fonts
 
 SplashScreen.preventAutoHideAsync(); //fonts
 
-import LoginScreen from "./Screens/LoginScreen";
-import RegistrationScreen from "./Screens/RegistrationScreen";
-import Home from "./Screens/main/Home";
-
-const Stack = createStackNavigator();
-enableScreens();
+import { useRoute } from "./router";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -45,23 +41,11 @@ export default function App() {
     return null;
   }
 
+  const routing = useRoute({});
+
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="LoginScreen"
-          screenOptions={{
-            headerShown: false,
-            cardStyle: {},
-          }}
-        >
-          <Stack.Screen
-            name="RegistrationScreen"
-            component={RegistrationScreen}
-          />
-          <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <NavigationContainer>{routing}</NavigationContainer>
     </View>
 
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

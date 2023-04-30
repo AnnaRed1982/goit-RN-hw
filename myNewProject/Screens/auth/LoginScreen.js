@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   View,
   Text,
   Image,
+  ImageBackground,
   TextInput,
   TouchableWithoutFeedback,
   TouchableOpacity,
@@ -17,21 +19,22 @@ import {
 } from "react-native";
 
 const initialState = {
-  name: "",
   email: "",
   password: "",
 };
+
 const { width, height } = Dimensions.get("screen");
 
-export default function RegistrationScreen({ navigation }) {
+export default function LoginScreen() {
   const [state, setState] = useState(initialState);
   const [hidePass, setHidePass] = useState(true); //password
   const [isFocused, setIsFocused] = useState({
-    name: false,
     email: false,
     password: false,
   });
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -83,7 +86,7 @@ export default function RegistrationScreen({ navigation }) {
         }}
       >
         <Image
-          source={require("../assets/images/photoBG.jpg")}
+          source={require("../../assets/images/photoBG.jpg")}
           style={{
             width,
             height,
@@ -102,18 +105,7 @@ export default function RegistrationScreen({ navigation }) {
                 : styles.form
             }
           >
-            <View style={styles.boxFoto}>
-              <TouchableOpacity
-                style={styles.boxFotoBtn}
-                // onPress={}
-              >
-                <Image
-                  style={styles.boxFotoBtnUnion}
-                  source={require("../assets/images/Union.png")}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.title}>Registration</Text>
+            <Text style={styles.title}>Log in</Text>
             <View
               style={
                 isKeyboardActive
@@ -121,25 +113,6 @@ export default function RegistrationScreen({ navigation }) {
                   : styles.inputContainer
               }
             >
-              <TextInput
-                value={state.name}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, name: value }))
-                }
-                placeholder="Login"
-                autoCapitalize="none"
-                onFocus={() => {
-                  handleInputFocus("name");
-                }}
-                onBlur={() => {
-                  handleInputBlur("name");
-                }}
-                style={
-                  isFocused.name
-                    ? [styles.input, { borderColor: "#FF6C00" }]
-                    : styles.input
-                }
-              />
               <TextInput
                 value={state.email}
                 onChangeText={(value) =>
@@ -162,7 +135,10 @@ export default function RegistrationScreen({ navigation }) {
               <TextInput
                 value={state.password}
                 onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, password: value }))
+                  setState((prevState) => ({
+                    ...prevState,
+                    password: value,
+                  }))
                 }
                 placeholder="Password"
                 secureTextEntry={hidePass ? true : false}
@@ -189,15 +165,15 @@ export default function RegistrationScreen({ navigation }) {
               style={isKeyboardActive ? { display: "none" } : styles.btn}
               onPress={onLogin}
             >
-              <Text style={styles.btnTitle}>Register</Text>
+              <Text style={styles.btnTitle}>Log in</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={
                 isKeyboardActive ? [{ display: "none" }] : [{ display: "flex" }]
               }
-              onPress={() => navigation.navigate("LoginScreen")}
+              onPress={() => navigation.navigate("Registration")}
             >
-              <Text style={styles.text}>Already have an account? Log in</Text>
+              <Text style={styles.text}>Don't have an account? Register</Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -207,7 +183,10 @@ export default function RegistrationScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  container: {},
+  image: {},
   form: {
+    flex: 0,
     backgroundColor: "#FFFFFF",
     width: "100%",
     alignSelf: "center",
@@ -215,38 +194,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
 
-    paddingTop: 92,
-    paddingBottom: 45,
+    paddingTop: 32,
+    paddingBottom: 111,
     paddingLeft: 16,
     paddingRight: 16,
-  },
-  boxFoto: {
-    position: "absolute",
-    width: 120,
-    height: 120,
-    left: 120,
-    top: -52,
-
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-  },
-  boxFotoBtn: {
-    position: "absolute",
-    width: 25,
-    height: 25,
-    left: 106,
-    top: 80,
-
-    backgroundColor: "#fff",
-    borderColor: "#FF6C00",
-    borderWidth: 1,
-    borderRadius: 25 / 2,
-
-    padding: 11 / 2,
-  },
-  boxFotoBtnUnion: {
-    width: 13,
-    height: 13,
   },
 
   title: {
