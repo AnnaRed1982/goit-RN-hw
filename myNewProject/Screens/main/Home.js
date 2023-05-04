@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import PostsScreen from "./PostsScreen";
@@ -22,26 +24,37 @@ import {
 } from "react-native";
 
 const MainTab = createBottomTabNavigator();
+const MainStack = createStackNavigator();
 
 export default function Home() {
+  const navigation = useNavigation();
   return (
+    // <MainStack.Navigator initialRouteName="Posts">
+    //   <MainStack.Screen name="Posts" component={PostsScreen} />
+    //   <MainStack.Screen name="CreatePosts" component={CreatePostsScreen} />
+    //   <MainStack.Screen name="Posts" component={ProfileScreen} />
+    // </MainStack.Navigator>
     <MainTab.Navigator
       initialRouteName="Posts"
       screenOptions={{
         tabBarShowLabel: false,
         headerStyle: {
           height: 88,
-          //   backgroundColor: "rgba(33, 33, 33, 0.8)",
+          borderBottomWidth: 1,
+          borderBottomColor: "#E8E8E8",
+          //backgroundColor: "rgba(33, 33, 33, 0.8)",
         },
         headerRightContainerStyle: {
-          paddingRight: 10,
+          paddingRight: 16,
           color: "#E5E5E5", //?????
         },
-        // headerContainerStyle: { padding: 10 },
+        headerLeftContainerStyle: {
+          paddingLeft: 16,
+          color: "#E5E5E5", //?????
+        },
         headerTitleAlign: "center",
         headerTitleStyle: {
-          fontFamily: "Roboto",
-          fontWeight: 500,
+          fontFamily: "Roboto-Medium",
           fontSize: 17,
           lineHeight: 22,
           alignSelf: "center",
@@ -51,16 +64,13 @@ export default function Home() {
           letterSpacing: -0.408,
           color: "#212121",
         },
-        cardStyle: { backgroundColor: "#FFFFFF" },
+        // cardStyle: { backgroundColor: "#FFFFFF" },
         // tabBarInactiveTintColor: "rgba(33, 33, 33, 0.8)",
-        // tabBarActiveTintColor: "#e91e63",
-        // tabBarIconStyle:,
-          tabBarStyle: {
-            paddingHorizontal: 31,   
-          //   backgroundColor: "fff",
-          //   flex: 0,
-          //   gap: 9,
-          //   height: 83,
+        tabBarStyle: {
+          paddingHorizontal: 31,
+          borderTopColor: "#E8E8E8",
+          borderTopWidth: 1,
+          //height: 83,
         },
         tabBarItemStyle: {
           //   backgroundColor: "#00ff00",
@@ -72,13 +82,15 @@ export default function Home() {
       <MainTab.Screen
         options={{
           headerRight: ({ focused, size, color }) => (
-            <Image
-              style={{
-                width: 24,
-                height: 24,
-              }}
-              source={require("../../assets/images/log-out.png")}
-            />
+            <TouchableOpacity>
+              <Image
+                style={{
+                  width: 24,
+                  height: 24,
+                }}
+                source={require("../../assets/images/log-out.png")}
+              />
+            </TouchableOpacity>
           ),
           tabBarIcon: ({ focused, size, color }) => (
             <Image
@@ -96,6 +108,17 @@ export default function Home() {
       />
       <MainTab.Screen
         options={{
+          headerLeft: ({ focused, size, color }) => (
+            <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
+              <Image
+                style={{
+                  width: 24,
+                  height: 24,
+                }}
+                source={require("../../assets/images/arrow-left.png")}
+              />
+            </TouchableOpacity>
+          ),
           tabBarIcon: ({ focused, size, color }) => (
             <View style={styles.createPostBtn}>
               <Image
@@ -104,8 +127,9 @@ export default function Home() {
               />
             </View>
           ),
+          tabBarStyle: { display: "none" },
         }}
-        name="CreatePosts"
+        name="Create post"
         component={CreatePostsScreen}
       />
       <MainTab.Screen
@@ -119,6 +143,7 @@ export default function Home() {
               source={require("../../assets/images/user.png")}
             />
           ),
+          headerShown: false,
         }}
         name="Profile"
         component={ProfileScreen}
@@ -127,7 +152,7 @@ export default function Home() {
   );
 }
 const styles = StyleSheet.create({
-  container: { backgroundColor: "#FFFFFF", flex: 0, gap: 31 },
+  container: {},
   createPostBtn: {
     flex: 0,
     justifyContent: "center",
@@ -141,6 +166,5 @@ const styles = StyleSheet.create({
     width: 13,
     height: 13,
     tintColor: "#FFFFFF",
-    // color: "#FFFFFF",
   },
 });

@@ -18,6 +18,8 @@ import {
   Dimensions,
 } from "react-native";
 
+import { useUser } from "../../services/userContext";
+
 const initialState = {
   email: "",
   password: "",
@@ -35,6 +37,7 @@ export default function LoginScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
 
   const navigation = useNavigation();
+  const { setIsLoggedIn } = useUser();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -73,6 +76,7 @@ export default function LoginScreen() {
     console.log("Credentials", state);
     setState(initialState);
     setHidePass(true);
+    setIsLoggedIn(true);
   };
 
   return (
@@ -211,7 +215,6 @@ const styles = StyleSheet.create({
 
     marginBottom: 33,
   },
-  image: {},
 
   inputContainer: {
     flex: 0,

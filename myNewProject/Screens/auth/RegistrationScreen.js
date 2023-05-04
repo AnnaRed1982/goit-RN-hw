@@ -17,6 +17,8 @@ import {
   Dimensions,
 } from "react-native";
 
+import { useUser } from "../../services/userContext";
+
 const initialState = {
   name: "",
   email: "",
@@ -33,7 +35,9 @@ export default function RegistrationScreen() {
     password: false,
   });
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
+  
   const navigation = useNavigation();
+  const { setIsLoggedIn } = useUser();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -72,6 +76,7 @@ export default function RegistrationScreen() {
     console.log("Credentials", state);
     setState(initialState);
     setHidePass(true);
+    setIsLoggedIn(true);
   };
 
   return (
