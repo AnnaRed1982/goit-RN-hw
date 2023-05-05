@@ -18,8 +18,11 @@ import {
 } from "react-native";
 const { width, height } = Dimensions.get("screen");
 
+import { useUser } from "../../services/userContext";
+
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const setIsLoggedIn = useUser();
   return (
     <View style={[styles.container, { width, height }]}>
       <Image
@@ -47,7 +50,7 @@ export default function ProfileScreen() {
         <TouchableOpacity
           style={styles.logOutBtn}
           onPress={() => {
-            navigation.navigate("Home");
+            setIsLoggedIn(false);
           }}
         >
           <Image

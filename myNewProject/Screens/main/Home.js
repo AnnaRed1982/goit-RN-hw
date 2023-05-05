@@ -7,6 +7,8 @@ import PostsScreen from "./PostsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
 import ProfileScreen from "./ProfileScreen";
 
+import { useUser } from "../../services/userContext";
+
 import {
   StyleSheet,
   Image,
@@ -24,10 +26,11 @@ import {
 } from "react-native";
 
 const MainTab = createBottomTabNavigator();
-const MainStack = createStackNavigator();
+// const MainStack = createStackNavigator();
 
 export default function Home() {
   const navigation = useNavigation();
+  const setIsLoggedIn = useUser();
   return (
     // <MainStack.Navigator initialRouteName="Posts">
     //   <MainStack.Screen name="Posts" component={PostsScreen} />
@@ -82,7 +85,11 @@ export default function Home() {
       <MainTab.Screen
         options={{
           headerRight: ({ focused, size, color }) => (
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setIsLoggedIn(false);
+              }}
+            >
               <Image
                 style={{
                   width: 24,

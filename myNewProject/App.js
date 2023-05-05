@@ -1,41 +1,14 @@
 import React, { useState, useCallback, useContext } from "react";
-import {
-  NavigationContainer,
-  useNavigation,
-  DefaultTheme,
-} from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-// import { enableScreens } from "react-native-screens";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
 
-import {
-  StyleSheet,
-  View,
-  ImageBackground,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-  Button,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { useFonts } from "expo-font"; //fonts
 import * as SplashScreen from "expo-splash-screen"; //fonts
 SplashScreen.preventAutoHideAsync(); //fonts
 
-// const Stack = createStackNavigator();
-// const AuthStack = createStackNavigator();
-// import Home from "./Screens/main/Home";
-// import LoginScreen from "./Screens/auth/LoginScreen";
-// import RegistrationScreen from "./Screens/auth/RegistrationScreen";
-
 import { useRoute } from "./router";
 import { UserContext } from "./services/userContext";
-// import { useUser } from "./services/userContext";
-// import { UserProvider } from "./services/userContext";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,15 +27,9 @@ export default function App() {
     return null;
   }
 
-  // const routing = useRoute(null);
-  // const { auth } = useAuth();
-  // const {isLoggedIn} = useUser() ;
-  // console.log(isLoggedIn)
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <UserContext.Provider value={{ setIsLoggedIn }}>
+      <UserContext.Provider value={setIsLoggedIn}>
         <NavigationContainer>{useRoute(isLoggedIn)}</NavigationContainer>
       </UserContext.Provider>
     </View>

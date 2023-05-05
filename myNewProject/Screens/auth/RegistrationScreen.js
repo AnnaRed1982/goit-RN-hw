@@ -35,9 +35,9 @@ export default function RegistrationScreen() {
     password: false,
   });
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
-  
+
   const navigation = useNavigation();
-  const { setIsLoggedIn } = useUser();
+  const setIsLoggedIn = useUser();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -71,7 +71,6 @@ export default function RegistrationScreen() {
   };
 
   const onLogin = () => {
-    // Alert.alert("Credentials", `${name} + ${password}`);
     Keyboard.dismiss();
     console.log("Credentials", state);
     setState(initialState);
