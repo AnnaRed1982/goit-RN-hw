@@ -26,34 +26,73 @@ import {
 } from "react-native";
 
 const MainTab = createBottomTabNavigator();
-// const MainStack = createStackNavigator();
 
 export default function Home() {
   const navigation = useNavigation();
   const setIsLoggedIn = useUser();
+
+  const screenOptions = (route, color) => {
+    let iconName;
+    switch (route.name) {
+      case "Posts":
+        iconName = "compass-outline";
+        break;
+      case "Create post":
+        iconName = "heart-outline";
+        break;
+      case "Profile":
+        iconName = "star-outline";
+        break;
+    }
+
+    return (
+      <Icon type="material-community" name={iconName} size={22} color={color} />
+    );
+  };
+
   return (
-    // <MainStack.Navigator initialRouteName="Posts">
-    //   <MainStack.Screen name="Posts" component={PostsScreen} />
-    //   <MainStack.Screen name="CreatePosts" component={CreatePostsScreen} />
-    //   <MainStack.Screen name="Posts" component={ProfileScreen} />
-    // </MainStack.Navigator>
     <MainTab.Navigator
       initialRouteName="Posts"
-      screenOptions={{
+      screenOptions={({ route }) => ({
         tabBarShowLabel: false,
         headerStyle: {
           height: 88,
           borderBottomWidth: 1,
           borderBottomColor: "#E8E8E8",
-          //backgroundColor: "rgba(33, 33, 33, 0.8)",
         },
         headerRightContainerStyle: {
           paddingRight: 16,
           color: "#E5E5E5", //?????
         },
+        headerRight: ({ focused, size, color }) => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                setIsLoggedIn(false);
+              }}
+            >
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={require("../../assets/images/log-out.png")}
+              />
+            </TouchableOpacity>
+          );
+        },
         headerLeftContainerStyle: {
           paddingLeft: 16,
           color: "#E5E5E5", //?????
+        },
+        headerLeft: ({ focused, size, color }) => {
+          if (route.name === "Create post") {
+            return (
+              <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
+                <Image
+                  style={{ width: 24, height: 24 }}
+                  source={require("../../assets/images/arrow-left.png")}
+                />
+              </TouchableOpacity>
+            );
+          }
         },
         headerTitleAlign: "center",
         headerTitleStyle: {
@@ -67,91 +106,79 @@ export default function Home() {
           letterSpacing: -0.408,
           color: "#212121",
         },
-        // cardStyle: { backgroundColor: "#FFFFFF" },
-        // tabBarInactiveTintColor: "rgba(33, 33, 33, 0.8)",
+        // headerShown: ({ focused, color, size }) => {
+        //   if (route.name === "Profile") {
+        //     return false;
+        //   }
+        // },
+        ////////////////////////////////////////////////////////////////////////////
         tabBarStyle: {
           paddingHorizontal: 31,
           borderTopColor: "#E8E8E8",
           borderTopWidth: 1,
-          //height: 83,
         },
-        tabBarItemStyle: {
-          //   backgroundColor: "#00ff00",
-          //   margin: 5,
-          //   borderRadius: 10,
+        tabBarItemStyle: {},
+        tabBarIcon: ({ focused, color, size }) => {
+          if (route.name === "Posts") {
+            return (
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={require("../../assets/images/grid.png")}
+              />
+            );
+          }
+          if (route.name === "Create post") {
+            return (
+              <View style={styles.createPostBtn}>
+                <Image
+                  style={styles.createPostButtonTitle}
+                  source={require("../../assets/images/UnionCreatePostScreen.png")}
+                />
+              </View>
+            );
+            // const image =
+            //   (route.name === "Profile") & (focused === false) ? (
+            //     <Image
+            //       style={{ height: 24, width: 24 }}
+            //       source={require("../../assets/images/UnionNotActive.png")}
+            //     />
+            //   ) : (
+            //     <View style={styles.createPostBtn}>
+            //       <Image
+            //         style={styles.createPostButtonTitle}
+            //         source={require("../../assets/images/UnionCreatePostScreen.png")}
+            //       />
+            //     </View>
+            //   );
+            // return image;
+          }
+          if (route.name === "Profile") {
+            const image = focused ? (
+              <View style={styles.createPostBtn}>
+                <Image
+                  style={{ height: 24, width: 24 }}
+                  source={require("../../assets/images/user-active.png")}
+                />
+              </View>
+            ) : (
+              <Image
+                source={require("../../assets/images/user.png")}
+                style={{ height: 24, width: 24 }}
+              />
+            );
+            return image;
+          }
         },
-      }}
+      })}
     >
+      <MainTab.Screen name="Posts" component={PostsScreen} />
       <MainTab.Screen
-        options={{
-          headerRight: ({ focused, size, color }) => (
-            <TouchableOpacity
-              onPress={() => {
-                setIsLoggedIn(false);
-              }}
-            >
-              <Image
-                style={{
-                  width: 24,
-                  height: 24,
-                }}
-                source={require("../../assets/images/log-out.png")}
-              />
-            </TouchableOpacity>
-          ),
-          tabBarIcon: ({ focused, size, color }) => (
-            <Image
-              style={{
-                width: 24,
-                height: 24,
-              }}
-              // color: "rgba(33, 33, 33, 0.8)"
-              source={require("../../assets/images/grid.png")}
-            />
-          ),
-        }}
-        name="Posts"
-        component={PostsScreen}
-      />
-      <MainTab.Screen
-        options={{
-          headerLeft: ({ focused, size, color }) => (
-            <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
-              <Image
-                style={{
-                  width: 24,
-                  height: 24,
-                }}
-                source={require("../../assets/images/arrow-left.png")}
-              />
-            </TouchableOpacity>
-          ),
-          tabBarIcon: ({ focused, size, color }) => (
-            <View style={styles.createPostBtn}>
-              <Image
-                style={styles.createPostButtonTitle}
-                source={require("../../assets/images/UnionCreatePostScreen.png")}
-              />
-            </View>
-          ),
-          tabBarStyle: { display: "none" },
-        }}
+        options={{ tabBarStyle: { display: "none" } }}
         name="Create post"
         component={CreatePostsScreen}
       />
       <MainTab.Screen
-        options={{
-          tabBarIcon: ({ focused, size, color }) => (
-            <Image
-              style={{
-                width: 24,
-                height: 24,
-              }}
-              source={require("../../assets/images/user.png")}
-            />
-          ),
-          headerShown: false,
-        }}
+        options={{ headerShown: false }}
         name="Profile"
         component={ProfileScreen}
       />
