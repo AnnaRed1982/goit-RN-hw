@@ -18,21 +18,16 @@ import {
   Dimensions,
 } from "react-native";
 
-// import PostsScreen from  "../main/PostsScreen"
-// const MainTab = createBottomTabNavigator();
+// import CreatePostsScreen from "./CreatePostsScreen";
+// import ProfileScreen from "./ProfileScreen";
+// import Home from "./Home";
+
+const MainTab = createBottomTabNavigator();
 
 const { width, height } = Dimensions.get("screen");
 
 export default function PostsScreen() {
   const navigation = useNavigation();
-  return (
-    <View style={[styles.container, { width, height }]}>
-      {/* <MainTab.Navigator>
-        <MainTab.Screen name="Posts" component={PostsScreen} />
-        <MainTab.Screen name="CreatePosts" component={CreatePostsScreen} />
-        <MainTab.Screen name="Profile" component={ProfileScreen} />
-      </MainTab.Navigator> */}
-    </View>
-  );
+  return <View style={[styles.container, { width, height }]}></View>;
 }
 const styles = StyleSheet.create({ container: { backgroundColor: "#fff" } });

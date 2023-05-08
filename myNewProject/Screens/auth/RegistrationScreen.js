@@ -17,6 +17,8 @@ import {
   Dimensions,
 } from "react-native";
 
+import { Plus } from "react-native-feather";
+
 import { useUser } from "../../services/userContext";
 
 const initialState = {
@@ -113,10 +115,7 @@ export default function RegistrationScreen() {
                 style={styles.boxFotoBtn}
                 // onPress={}
               >
-                <Image
-                  style={styles.boxFotoBtnUnion}
-                  source={require("../../assets/images/Union.png")}
-                />
+                <Plus stroke="#FF6C00" strokeWidth={1} width={20} height={20} />
               </TouchableOpacity>
             </View>
             <Text style={styles.title}>Registration</Text>
@@ -242,6 +241,9 @@ const styles = StyleSheet.create({
     height: 25,
     left: 106,
     top: 80,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
 
     backgroundColor: "#fff",
     borderColor: "#FF6C00",
@@ -250,10 +252,10 @@ const styles = StyleSheet.create({
 
     padding: 11 / 2,
   },
-  boxFotoBtnUnion: {
-    width: 13,
-    height: 13,
-  },
+  // boxFotoBtnUnion: {
+  //   width: 13,
+  //   height: 13,
+  // },
 
   title: {
     color: "#212121",

@@ -18,7 +18,8 @@ import {
   Dimensions,
 } from "react-native";
 
-import PostsScreen from "./PostsScreen";
+import { Camera, Trash2 } from "react-native-feather";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const initialState = {
   fotoTitle: "",
@@ -41,12 +42,10 @@ export default function CreatePostsScreen() {
         <View style={{ width: "100%" }}>
           <View style={styles.foto}>
             <TouchableOpacity style={styles.fotoOverlay}>
-              <Image
-                style={{
-                  width: 24,
-                  height: 24,
-                }}
-                source={require("../../assets/images/camera.png")}
+              <MaterialCommunityIcons
+                name="camera"
+                size={24}
+                color={"#BDBDBD"}
               />
             </TouchableOpacity>
           </View>
@@ -68,12 +67,6 @@ export default function CreatePostsScreen() {
                   placeholder="Title..."
                   placeholderTextColor="#BDBDBD"
                   // autoCapitalize="none"
-                  // onFocus={() => {
-                  //   // handleInputFocus("email");
-                  // }}
-                  // onBlur={() => {
-                  //   // handleInputBlur("email");
-                  // }}
                   style={styles.input}
                 />
                 <View style={styles.inputLocationBox}>
@@ -87,12 +80,6 @@ export default function CreatePostsScreen() {
                     }
                     placeholder="Location..."
                     placeholderTextColor="#BDBDBD"
-                    // onFocus={() => {
-                    //   handleInputFocus("password");
-                    // }}
-                    // onBlur={() => {
-                    //   handleInputBlur("password");
-                    // }}
                     style={styles.inputLocation}
                   />
                   <TouchableOpacity style={styles.locationBtn}>
@@ -107,7 +94,6 @@ export default function CreatePostsScreen() {
                 </View>
               </View>
               <TouchableOpacity
-                // style={isKeyboardActive ? { display: "none" } : styles.btn}
                 onPress={onPostFoto}
                 style={styles.createPostBtn}
               >
@@ -117,13 +103,7 @@ export default function CreatePostsScreen() {
           </KeyboardAvoidingView>
         </View>
         <TouchableOpacity style={styles.trashBtn}>
-          <Image
-            style={{
-              width: 24,
-              height: 24,
-            }}
-            source={require("../../assets/images/trash-2.png")}
-          />
+          <Trash2 stroke="#BDBDBD" strokeWidth={1} width={24} height={24} />
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>

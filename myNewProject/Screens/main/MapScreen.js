@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   Image,
@@ -16,6 +17,7 @@ import {
 } from "react-native";
 
 export default function MapScreen() {
+  const navigation = useNavigation();
   return (
     <View>
       <Text>MapScreen</Text>

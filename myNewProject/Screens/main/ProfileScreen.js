@@ -16,6 +16,8 @@ import {
   Text,
   Dimensions,
 } from "react-native";
+import { LogOut, Plus } from "react-native-feather";
+
 const { width, height } = Dimensions.get("screen");
 
 import { useUser } from "../../services/userContext";
@@ -41,9 +43,12 @@ export default function ProfileScreen() {
             style={styles.boxFotoBtn}
             // onPress={}
           >
-            <Image
-              style={styles.boxFotoBtnUnion}
-              source={require("../../assets/images/Union2.png")}
+            <Plus
+              stroke="#BDBDBD"
+              strokeWidth={1}
+              width={20}
+              height={20}
+              style={{ transform: [{ rotate: "45deg" }] }}
             />
           </TouchableOpacity>
         </View>
@@ -53,12 +58,18 @@ export default function ProfileScreen() {
             setIsLoggedIn(false);
           }}
         >
-          <Image
+          {/* <Image
             style={{
               width: 24,
               height: 24,
             }}
             source={require("../../assets/images/log-out.png")}
+          /> */}
+          <LogOut
+            stroke="rgba(189, 189, 189, 1)"
+            strokeWidth={1}
+            width={24}
+            height={24}
           />
         </TouchableOpacity>
       </View>
@@ -91,6 +102,9 @@ const styles = StyleSheet.create({
     height: 25,
     left: 106,
     top: 80,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
 
     backgroundColor: "#fff",
     borderColor: "#BDBDBD",
@@ -99,10 +113,10 @@ const styles = StyleSheet.create({
 
     padding: 11 / 2,
   },
-  boxFotoBtnUnion: {
-    width: 13,
-    height: 13,
-  },
+  // boxFotoBtnUnion: {
+  //   width: 13,
+  //   height: 13,
+  // },
   logOutBtn: {
     position: "absolute",
     left: 335,

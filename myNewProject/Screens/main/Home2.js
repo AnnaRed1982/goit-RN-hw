@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { enableScreens } from "react-native-screens";
 
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { User, Grid, Plus, LogOut, ArrowLeft } from "react-native-feather";
-//import { AntDesign } from "@expo/vector-icons";
+import PostsScreen from "./PostsScreen";
+import CreatePostsScreen from "./CreatePostsScreen";
+import ProfileScreen from "./ProfileScreen";
+
+import { useUser } from "../../services/userContext";
 
 import {
   StyleSheet,
@@ -24,39 +25,15 @@ import {
   Text,
 } from "react-native";
 
-import { useUser } from "./services/userContext";
-
-import LoginScreen from "./Screens/auth/LoginScreen";
-import RegistrationScreen from "./Screens/auth/RegistrationScreen";
-import Home from "./Screens/main/Home";
-import CreatePostsScreen from "./Screens/main/CreatePostsScreen";
-import ProfileScreen from "./Screens/main/ProfileScreen";
-
-const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-enableScreens();
+export default function Home() {
+  const navigation = useNavigation();
+  const setIsLoggedIn = useUser();
 
-export const useRoute = (isAuth) => {
-  // const navigation = useNavigation();
-  // const setIsLoggedIn = useUser();
-  if (!isAuth) {
-    return (
-      <AuthStack.Navigator
-        initialRouteName="Login"
-        screenOptions={{
-          headerShown: false,
-          cardStyle: {},
-        }}
-      >
-        <AuthStack.Screen name="Registration" component={RegistrationScreen} />
-        <AuthStack.Screen name="Login" component={LoginScreen} />
-      </AuthStack.Navigator>
-    );
-  }
   return (
     <MainTab.Navigator
-      // initialRouteName="Posts"
+      initialRouteName="Posts"
       screenOptions={({ route }) => ({
         tabBarShowLabel: false,
         headerStyle: {
@@ -69,23 +46,18 @@ export const useRoute = (isAuth) => {
           color: "#E5E5E5", //?????
         },
         headerRight: ({ focused, size, color }) => {
-          if (route.name === "Posts") {
-            return (
-              // <TouchableOpacity onPress={() => {setIsLoggedIn(false)}}>
-              <LogOut
-                stroke="rgba(189, 189, 189, 1)"
-                strokeWidth={1}
-                width={24}
-                height={24}
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                setIsLoggedIn(false);
+              }}
+            >
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={require("../../assets/images/log-out.png")}
               />
-
-              // <Image
-              //   style={{ width: 24, height: 24 }}
-              //   source={require("./assets/images/log-out.png")}
-              // />
-              // </TouchableOpacity>
-            );
-          }
+            </TouchableOpacity>
+          );
         },
         headerLeftContainerStyle: {
           paddingLeft: 16,
@@ -94,19 +66,12 @@ export const useRoute = (isAuth) => {
         headerLeft: ({ focused, size, color }) => {
           if (route.name === "Create post") {
             return (
-              // <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
-              <ArrowLeft
-                stroke="rgba(33, 33, 33, 0.8)"
-                strokeWidth={1}
-                width={24}
-                height={24}
-              />
-              // <MaterialCommunityIcons
-              //   name="arrow-left"
-              //   size={24}
-              //   color={"rgba(33, 33, 33, 0.8)"}
-              // />
-              // </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
+                <Image
+                  style={{ width: 24, height: 24 }}
+                  source={require("../../assets/images/arrow-left.png")}
+                />
+              </TouchableOpacity>
             );
           }
         },
@@ -137,15 +102,9 @@ export const useRoute = (isAuth) => {
         tabBarIcon: ({ focused, color, size }) => {
           if (route.name === "Posts") {
             return (
-              // <Image
-              //   style={{ width: 24, height: 24 }}
-              //   source={require("./assets/images/grid.png")}
-              // />
-              <Grid
-                stroke="rgba(33, 33, 33, 0.8)"
-                strokeWidth={1}
-                width={24}
-                height={24}
+              <Image
+                style={{ width: 24, height: 24 }}
+                source={require("../../assets/images/grid.png")}
               />
             );
           }
@@ -163,15 +122,14 @@ export const useRoute = (isAuth) => {
               route.name === "Profile" ? (
                 <Image
                   style={{ height: 24, width: 24 }}
-                  source={require("./assets/images/UnionNotActive.png")}
+                  source={require("../../assets/images/UnionNotActive.png")}
                 />
               ) : (
                 <View style={styles.createPostBtn}>
-                  {/* <Image
+                  <Image
                     // style={styles.createPostButtonTitle}
-                    source={require("./assets/images/UnionCreatePostScreen.png")}
-                  /> */}
-                  <Plus stroke="#fff" strokeWidth={1} width={20} height={20} />
+                    source={require("../../assets/images/UnionCreatePostScreen.png")}
+                  />
                 </View>
               );
             return image;
@@ -179,18 +137,15 @@ export const useRoute = (isAuth) => {
           if (route.name === "Profile") {
             const image = focused ? (
               <View style={styles.createPostBtn}>
-                <User stroke="#fff" strokeWidth={1} width={24} height={24} />
+                <Image
+                  style={{ height: 24, width: 24 }}
+                  source={require("../../assets/images/user-active.png")}
+                />
               </View>
             ) : (
-              // <Image
-              //   source={require("./assets/images/user.png")}
-              //   style={{ height: 24, width: 24 }}
-              // />
-              <User
-                stroke="rgba(33, 33, 33, 0.8)"
-                strokeWidth={1}
-                width={24}
-                height={24}
+              <Image
+                source={require("../../assets/images/user.png")}
+                style={{ height: 24, width: 24 }}
               />
             );
             return image;
@@ -198,7 +153,7 @@ export const useRoute = (isAuth) => {
         },
       })}
     >
-      <MainTab.Screen name="Posts" component={Home} />
+      <MainTab.Screen name="Posts" component={PostsScreen} />
       <MainTab.Screen
         options={{ tabBarStyle: { display: "none" } }}
         name="Create post"
@@ -211,7 +166,7 @@ export const useRoute = (isAuth) => {
       />
     </MainTab.Navigator>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {},
