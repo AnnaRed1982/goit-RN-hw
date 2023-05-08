@@ -252,10 +252,6 @@ const styles = StyleSheet.create({
 
     padding: 11 / 2,
   },
-  // boxFotoBtnUnion: {
-  //   width: 13,
-  //   height: 13,
-  // },
 
   title: {
     color: "#212121",

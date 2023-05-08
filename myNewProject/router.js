@@ -101,12 +101,6 @@ export const useRoute = (isAuth) => {
                 width={24}
                 height={24}
               />
-              // <MaterialCommunityIcons
-              //   name="arrow-left"
-              //   size={24}
-              //   color={"rgba(33, 33, 33, 0.8)"}
-              // />
-              // </TouchableOpacity>
             );
           }
         },
