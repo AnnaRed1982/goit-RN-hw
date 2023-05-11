@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   StyleSheet,
   Image,
@@ -31,7 +30,6 @@ export default function CreatePostsScreen() {
   const [state, setState] = useState(initialState);
   const navigation = useNavigation();
   const onPostFoto = () => {
-   
     Keyboard.dismiss();
     console.log("Foto", state);
     setState(initialState);

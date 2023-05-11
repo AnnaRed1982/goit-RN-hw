@@ -46,28 +46,11 @@ export default function App() {
         <NavigationContainer>{useRoute(isLoggedIn)}</NavigationContainer>
       </UserContext.Provider>
     </View>
-
-    // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    //   <View style={styles.container} onLayout={onLayoutRootView}>
-    //     <Image
-    //       source={require("./assets/images/photoBG.jpg")}
-    //       style={styles.image}
-    //     />
-    //     <RegistrationScreen />
-    //   </View>
-    // </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // width: "100%",
-    // justifyContent: "flex-end",
   },
-  // image: {
-  //   position: "absolute",
-  //   top: 0,
-  //   width: "100%",
-  // },
 });
