@@ -18,7 +18,7 @@ import {
   Dimensions,
 } from "react-native";
 
-import { Camera, Trash2 } from "react-native-feather";
+import { MapPin, Trash2 } from "react-native-feather";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const initialState = {
@@ -31,7 +31,7 @@ export default function CreatePostsScreen() {
   const [state, setState] = useState(initialState);
   const navigation = useNavigation();
   const onPostFoto = () => {
-    // Alert.alert("Credentials", `${name} + ${password}`);
+   
     Keyboard.dismiss();
     console.log("Foto", state);
     setState(initialState);
@@ -83,12 +83,11 @@ export default function CreatePostsScreen() {
                     style={styles.inputLocation}
                   />
                   <TouchableOpacity style={styles.locationBtn}>
-                    <Image
-                      style={{
-                        width: 24,
-                        height: 24,
-                      }}
-                      source={require("../../assets/images/map-pin.png")}
+                    <MapPin
+                      stroke="#BDBDBD"
+                      strokeWidth={1}
+                      width={24}
+                      height={24}
                     />
                   </TouchableOpacity>
                 </View>

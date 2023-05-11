@@ -20,16 +20,10 @@ import {
 
 import { useUser } from "../../services/userContext";
 
-const initialState = {
-  email: "",
-  password: "",
-};
-
 const { width, height } = Dimensions.get("screen");
 
 export default function LoginScreen() {
-  const [state, setState] = useState(initialState);
-  const [hidePass, setHidePass] = useState(true); //password
+  const [hidePass, setHidePass] = useState(true); //password hide/show
   const [isFocused, setIsFocused] = useState({
     email: false,
     password: false,
@@ -37,7 +31,8 @@ export default function LoginScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
 
   const navigation = useNavigation();
-  const setIsLoggedIn = useUser();
+  const { setIsLoggedIn, setEmail, setPassword, email, password, login } =
+    useUser();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -71,13 +66,18 @@ export default function LoginScreen() {
   };
 
   const onLogin = () => {
+    if (email === "") {
+      return Alert.alert("Email is required");
+    } else if (password === "") {
+      return Alert.alert("Password is required");
+    }
+
     Keyboard.dismiss();
-    console.log("Credentials", state);
-    setState(initialState);
+    console.log("Credentials", email, password);
     setHidePass(true);
     setIsLoggedIn(true);
   };
-
+  console.log("Credentials", email, password, login);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View
@@ -117,10 +117,8 @@ export default function LoginScreen() {
               }
             >
               <TextInput
-                value={state.email}
-                onChangeText={(value) =>
-                  setState((prevState) => ({ ...prevState, email: value }))
-                }
+                value={email}
+                onChangeText={(value) => setEmail(value)}
                 placeholder="Email adress"
                 autoCapitalize="none"
                 onFocus={() => {
@@ -136,13 +134,8 @@ export default function LoginScreen() {
                 }
               />
               <TextInput
-                value={state.password}
-                onChangeText={(value) =>
-                  setState((prevState) => ({
-                    ...prevState,
-                    password: value,
-                  }))
-                }
+                value={password}
+                onChangeText={(value) => setPassword(value)}
                 placeholder="Password"
                 secureTextEntry={hidePass ? true : false}
                 onFocus={() => {
@@ -174,7 +167,11 @@ export default function LoginScreen() {
               style={
                 isKeyboardActive ? [{ display: "none" }] : [{ display: "flex" }]
               }
-              onPress={() => navigation.navigate("Registration")}
+              onPress={() => {
+                setEmail("");
+                setPassword("");
+                navigation.navigate("Registration");
+              }}
             >
               <Text style={styles.text}>Don't have an account? Register</Text>
             </TouchableOpacity>
@@ -193,10 +190,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     width: "100%",
     alignSelf: "center",
-
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-
     paddingTop: 32,
     paddingBottom: 111,
     paddingLeft: 16,
@@ -205,34 +200,27 @@ const styles = StyleSheet.create({
 
   title: {
     color: "#212121",
-
     fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
     letterSpacing: 0.01,
-
     marginBottom: 33,
   },
 
   inputContainer: {
     flex: 0,
     gap: 16,
-
     marginBottom: 43,
   },
 
   input: {
     backgroundColor: "#F6F6F6",
-
     borderWidth: 1,
     borderColor: "#E8E8E8",
     borderRadius: 8,
-
     padding: 16,
     height: 50,
-    //marginHorizontal
-
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
@@ -241,7 +229,6 @@ const styles = StyleSheet.create({
 
   inputBtn: {
     color: "#1B4371",
-
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
@@ -256,15 +243,12 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     paddingLeft: 32,
     paddingRight: 32,
-
     backgroundColor: "#FF6C00",
     borderRadius: 100,
-
     marginBottom: 16,
   },
   btnTitle: {
     color: "#FFFFFF",
-
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
@@ -273,7 +257,6 @@ const styles = StyleSheet.create({
 
   text: {
     color: "#1B4371",
-
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,

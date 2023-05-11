@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   StyleSheet,
   Image,
@@ -18,23 +17,21 @@ import {
   Dimensions,
 } from "react-native";
 
-// import CreatePostsScreen from "./CreatePostsScreen";
-// import ProfileScreen from "./ProfileScreen";
-// import Home from "./Home";
-
-const MainTab = createBottomTabNavigator();
+import { useUser } from "../../services/userContext";
 
 const { width, height } = Dimensions.get("screen");
 
 export default function PostsScreen() {
   const navigation = useNavigation();
+  const { login, email } = useUser();
+
   return (
     <View style={[styles.container, { width, height }]}>
       <View style={styles.authBox}>
         <View style={styles.boxFoto}></View>
         <View>
-          <Text style={styles.nameTitle}>Natali Romanova</Text>
-          <Text style={styles.emailTitle}>email@example.com</Text>
+          <Text style={styles.nameTitle}>{login}</Text>
+          <Text style={styles.emailTitle}>{email}</Text>
         </View>
       </View>
     </View>

@@ -12,6 +12,9 @@ import { UserContext } from "./services/userContext";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
@@ -29,7 +32,17 @@ export default function App() {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <UserContext.Provider value={setIsLoggedIn}>
+      <UserContext.Provider
+        value={{
+          setIsLoggedIn,
+          login,
+          setLogin,
+          email,
+          setEmail,
+          password,
+          setPassword,
+        }}
+      >
         <NavigationContainer>{useRoute(isLoggedIn)}</NavigationContainer>
       </UserContext.Provider>
     </View>
