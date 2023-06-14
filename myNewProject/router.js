@@ -34,20 +34,20 @@ const MainTab = createBottomTabNavigator();
 enableScreens();
 
 export const useRoute = (isAuth) => {
-  if (!isAuth) {
-    return (
-      <AuthStack.Navigator
-        initialRouteName="Login"
-        screenOptions={{
-          headerShown: false,
-          cardStyle: {},
-        }}
-      >
-        <AuthStack.Screen name="Registration" component={RegistrationScreen} />
-        <AuthStack.Screen name="Login" component={LoginScreen} />
-      </AuthStack.Navigator>
-    );
-  }
+  // if (!isAuth) {
+  //   return (
+  //     <AuthStack.Navigator
+  //       initialRouteName="Login"
+  //       screenOptions={{
+  //         headerShown: false,
+  //         cardStyle: {},
+  //       }}
+  //     >
+  //       <AuthStack.Screen name="Registration" component={RegistrationScreen} />
+  //       <AuthStack.Screen name="Login" component={LoginScreen} />
+  //     </AuthStack.Navigator>
+  //   );
+  // }
   return (
     <MainTab.Navigator
       initialRouteName="Home"
@@ -64,7 +64,7 @@ export const useRoute = (isAuth) => {
         },
         headerLeft: ({ focused, size, color }) => {
           const navigation = useNavigation();
-          if (route.name === "Create post") {
+          if (route.name === "Create post" ) {
             return (
               <TouchableOpacity onPress={() => navigation.navigate("Home")}>
                 <ArrowLeft

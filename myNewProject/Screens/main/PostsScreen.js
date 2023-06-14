@@ -15,15 +15,31 @@ import {
   View,
   Text,
   Dimensions,
+  FlatList,
 } from "react-native";
+
+import { MapPin, MessageCircle } from "react-native-feather";
 
 import { useUser } from "../../services/userContext";
 
 const { width, height } = Dimensions.get("screen");
 
-export default function PostsScreen() {
+export default function PostsScreen({ route }) {
+  const [posts, setPosts] = useState([]);
   const navigation = useNavigation();
   const { login, email } = useUser();
+
+  useEffect(() => {
+    if (route.params) {
+      const item = route.params;
+      setPosts((prevState) => [...prevState, route.params]);
+    }
+  }, [route.params]);
+  console.log("posts--->", posts);
+
+  const moveMapScreen = () => {
+    navigation.navigate("Map");
+  };
 
   return (
     <View style={[styles.container, { width, height }]}>
@@ -34,20 +50,79 @@ export default function PostsScreen() {
           <Text style={styles.emailTitle}>{email}</Text>
         </View>
       </View>
+
+      <TouchableOpacity onPress={moveMapScreen}>
+        <Text style={[{ marginBottom: 20, fontSize: 20 }]}>
+          Press to MapScreen
+        </Text>
+      </TouchableOpacity>
+
+      <FlatList
+        data={posts}
+        keyExtractor={(item, indx) => indx.toString()}
+        renderItem={({ item }) => {
+          return (
+            <View
+              style={{
+                marginBottom: 32,
+                justifyContent: "center",
+                // alignItems: "center",
+              }}
+            >
+              <Image
+                source={{ uri: item.photo }}
+                style={{
+                  width,
+                  height: 299,
+                  borderRadius: 8,
+                  marginBottom: 8,
+                }}
+              />
+              <Text style={styles.fotoTitle}>{item.state.fotoTitle}</Text>
+
+              <View style={styles.fotoDetails}>
+                <TouchableOpacity style={{}}>
+                  <MessageCircle
+                    stroke="#BDBDBD"
+                    strokeWidth={1}
+                    width={24}
+                    height={24}
+                    style={{ transform: [{ rotate: "270deg" }] }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.fotoMap}>
+                  <MapPin
+                    stroke="#BDBDBD"
+                    strokeWidth={1}
+                    width={24}
+                    height={24}
+                  />
+                  <Text style={styles.fotoLocation}>
+                    {item.state.fotoLocation}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }}
+      />
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: "#fff",
-    paddingLeft: 16,
+    paddingHorizontal: 16,
     paddingTop: 32,
+    justifyContent: "center",
   },
   authBox: {
     flex: 0,
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+    marginBottom: 32,
   },
   boxFoto: {
     width: 60,
@@ -66,5 +141,32 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 11,
     lineHeight: 13,
+  },
+  fotoDetails: {
+    flex: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  fotoTitle: {
+    color: "#212121",
+    fontFamily: "Roboto-Medium",
+    fontSize: 16,
+    lineHeight: 19,
+    marginBottom: 8,
+  },
+  fotoMap: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 3,
+  },
+
+  fotoLocation: {
+    color: "#212121",
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    // textAlign: "right",
+    textDecorationLine: "underline",
   },
 });

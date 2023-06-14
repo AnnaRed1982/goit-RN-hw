@@ -25,7 +25,7 @@ import {
   Text,
 } from "react-native";
 
-import { LogOut } from "react-native-feather";
+import { ArrowLeft, LogOut } from "react-native-feather";
 
 const MainStack = createStackNavigator();
 
@@ -61,6 +61,24 @@ export default function Home() {
             flex: 0,
             letterSpacing: -0.408,
             color: "#212121",
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 16,
+          },
+          headerLeft: ({ focused, size, color }) => {
+            const navigation = useNavigation();
+            if (route.name === "Map" || route.name === "Comments") {
+              return (
+                <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
+                  <ArrowLeft
+                    stroke="rgba(33, 33, 33, 0.8)"
+                    strokeWidth={1}
+                    width={24}
+                    height={24}
+                  />
+                </TouchableOpacity>
+              );
+            }
           },
           headerRightContainerStyle: {
             paddingRight: 16,
