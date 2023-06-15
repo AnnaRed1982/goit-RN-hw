@@ -66,13 +66,11 @@ export default function PostsScreen({ route }) {
               style={{
                 marginBottom: 32,
                 justifyContent: "center",
-                // alignItems: "center",
               }}
             >
               <Image
                 source={{ uri: item.photo }}
                 style={{
-                  width,
                   height: 299,
                   borderRadius: 8,
                   marginBottom: 8,
@@ -142,12 +140,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 13,
   },
-  fotoDetails: {
-    flex: 0,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
   fotoTitle: {
     color: "#212121",
     fontFamily: "Roboto-Medium",
@@ -155,8 +147,13 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     marginBottom: 8,
   },
-  fotoMap: {
+  fotoDetails: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  fotoMap: {
     flexDirection: "row",
     gap: 3,
   },
@@ -166,7 +163,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
-    // textAlign: "right",
+    textAlign: "right",
     textDecorationLine: "underline",
   },
 });

@@ -37,7 +37,7 @@ export default function CreatePostsScreen() {
   const [photo, setPhoto] = useState("");
 
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
+  let isFocused = useIsFocused();
 
   useEffect(() => {
     (async () => {
@@ -52,15 +52,17 @@ export default function CreatePostsScreen() {
     const photo = await camera.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
     console.log("location", location);
+
     setState((prevState) => ({
       ...prevState,
       locationLatitude: location.coords.latitude,
       locationLongitude: location.coords.longitude,
     }));
     setPhoto(photo.uri);
+    console.log("photo", photo);
   };
 
-  const onPostFoto = () => {
+  const onPost = () => {
     Keyboard.dismiss();
     console.log("Foto", state);
     setState(initialState);
@@ -68,33 +70,41 @@ export default function CreatePostsScreen() {
     navigation.navigate("Posts", { photo, state });
   };
 
+  const onDelete = () => {
+    setState(initialState);
+    setPhoto("");
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[styles.container, { width, height }]}>
         <View style={{ width: "100%" }}>
-          {/* <View style={styles.fotoContainer}> */}
-
-          {isFocused && (
-            <Camera style={styles.foto} ref={setCamera}>
-              {photo && (
-                <View style={styles.takeFotoContainer}>
-                  <Image
-                    source={{ uri: photo }}
-                    style={{ height: 140, width: 140, borderRadius: 8 }}
+          <View style={styles.fotoContainer}>
+            {isFocused && (
+              <Camera ref={setCamera} style={styles.camera}>
+                <TouchableOpacity style={styles.fotoBtn} onPress={takePhoto}>
+                  <MaterialCommunityIcons
+                    name="camera"
+                    size={24}
+                    color={"#BDBDBD"}
                   />
-                </View>
-              )}
-
-              <TouchableOpacity style={styles.fotoOverlay} onPress={takePhoto}>
-                <MaterialCommunityIcons
-                  name="camera"
-                  size={24}
-                  color={"#BDBDBD"}
+                </TouchableOpacity>
+              </Camera>
+            )}
+            {photo && (
+              <View style={styles.takeFotoContainer}>
+                <Image
+                  source={{ uri: photo }}
+                  style={{
+                    flex: 1,
+                    height: 240,
+                    width,
+                    borderRadius: 8,
+                  }}
                 />
-              </TouchableOpacity>
-            </Camera>
-          )}
-          {/* </View> */}
+              </View>
+            )}
+          </View>
 
           <Text style={styles.fotoCaption}>Download foto</Text>
           {/* /////////////////////////////////////////////////////////////////// */}
@@ -140,15 +150,30 @@ export default function CreatePostsScreen() {
                 </View>
               </View>
               <TouchableOpacity
-                onPress={onPostFoto}
-                style={styles.createPostBtn}
+                onPress={onPost}
+                style={
+                  photo && state.fotoTitle && state.fotoLocation
+                    ? [styles.createPostBtn, { backgroundColor: "#FF6C00" }]
+                    : styles.createPostBtn
+                }
+                disabled={
+                  photo && state.fotoTitle && state.fotoLocation ? false : true
+                }
               >
-                <Text style={styles.createPostBtnTitle}>Post</Text>
+                <Text
+                  style={
+                    photo && state.fotoTitle && state.fotoLocation
+                      ? [styles.createPostBtnTitle, { color: "#FFFFFF" }]
+                      : styles.createPostBtnTitle
+                  }
+                >
+                  Post
+                </Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
         </View>
-        <TouchableOpacity style={styles.trashBtn}>
+        <TouchableOpacity style={styles.trashBtn} onPress={onDelete}>
           <Trash2 stroke="#BDBDBD" strokeWidth={1} width={24} height={24} />
         </TouchableOpacity>
       </View>
@@ -165,30 +190,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  // fotoContainer: {
-  //   // position: "relative",
-  // },
+
   takeFotoContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    borderColor: "#fff",
+    // position: "absolute",
+    // top: 0,
+    // left: 10,
+    // borderColor: "#fff",
     borderRadius: 8,
-    borderWidth: 1,
+    // borderWidth: 1,
   },
-  foto: {
-    flex: 0,
+  fotoContainer: {
+    overflow: "hidden",
+    background: "transparent",
     justifyContent: "center",
     alignItems: "center",
     height: 240,
     backgroundColor: "#F6F6F6",
-    borderWidth: 1,
-    borderColor: "#E8E8E8",
     borderRadius: 8,
     marginBottom: 8,
   },
+  camera: {
+    width: "100%",
+    height: "100%",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-  fotoOverlay: {
+  fotoBtn: {
     flex: 0,
     justifyContent: "center",
     alignItems: "center",
