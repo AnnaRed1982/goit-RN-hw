@@ -33,7 +33,8 @@ const MainTab = createBottomTabNavigator();
 
 enableScreens();
 
-export const useRoute = (isAuth) => {
+export const useRoute = (isAuth, routeName) => {
+  const hide = routeName != "Posts";
   // if (!isAuth) {
   //   return (
   //     <AuthStack.Navigator
@@ -64,7 +65,7 @@ export const useRoute = (isAuth) => {
         },
         headerLeft: ({ focused, size, color }) => {
           const navigation = useNavigation();
-          if (route.name === "Create post" ) {
+          if (route.name === "Create post") {
             return (
               <TouchableOpacity onPress={() => navigation.navigate("Home")}>
                 <ArrowLeft
@@ -128,7 +129,10 @@ export const useRoute = (isAuth) => {
       })}
     >
       <MainTab.Screen
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          tabBarStyle: { display: hide ? "none" : "flex" },
+        }}
         name="Home"
         component={Home}
       />

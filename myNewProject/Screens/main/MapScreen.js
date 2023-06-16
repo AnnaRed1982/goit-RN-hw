@@ -21,7 +21,7 @@ import {
 
 const { width, height } = Dimensions.get("screen");
 
-export default function MapScreen() {
+export default function MapScreen({ route }) {
   const navigation = useNavigation();
   return (
     <View style={[styles.container, { width, height }]}>
@@ -38,7 +38,10 @@ export default function MapScreen() {
       >
         <Marker
           title="I am here"
-          coordinate={{ latitude: 50.516339, longitude: 30.602185 }}
+          coordinate={{
+            latitude: route.params.latitude,
+            longitude: route.params.longitude,
+          }}
           description="Hello"
         />
       </MapView>

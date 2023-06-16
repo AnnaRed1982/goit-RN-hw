@@ -59,7 +59,16 @@ export default function CreatePostsScreen() {
       locationLongitude: location.coords.longitude,
     }));
     setPhoto(photo.uri);
-    console.log("photo", photo);
+  };
+
+  const onMapScreen = () => {
+    if (photo === "") {
+      return Alert.alert("Download foto");
+    }
+    navigation.navigate("Map", {
+      latitude: state.locationLatitude,
+      longitude: state.locationLongitude,
+    });
   };
 
   const onPost = () => {
@@ -105,8 +114,12 @@ export default function CreatePostsScreen() {
               </View>
             )}
           </View>
+          {photo ? (
+            <Text style={styles.fotoCaption}>Edit foto</Text>
+          ) : (
+            <Text style={styles.fotoCaption}>Download foto</Text>
+          )}
 
-          <Text style={styles.fotoCaption}>Download foto</Text>
           {/* /////////////////////////////////////////////////////////////////// */}
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : undefined}
@@ -139,7 +152,10 @@ export default function CreatePostsScreen() {
                     placeholderTextColor="#BDBDBD"
                     style={styles.inputLocation}
                   />
-                  <TouchableOpacity style={styles.locationBtn}>
+                  <TouchableOpacity
+                    style={styles.locationBtn}
+                    onPress={onMapScreen}
+                  >
                     <MapPin
                       stroke="#BDBDBD"
                       strokeWidth={1}
@@ -190,15 +206,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-
-  takeFotoContainer: {
-    // position: "absolute",
-    // top: 0,
-    // left: 10,
-    // borderColor: "#fff",
-    borderRadius: 8,
-    // borderWidth: 1,
-  },
   fotoContainer: {
     overflow: "hidden",
     background: "transparent",
@@ -216,7 +223,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
+  takeFotoContainer: {
+    borderRadius: 8,
+  },
   fotoBtn: {
     flex: 0,
     justifyContent: "center",

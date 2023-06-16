@@ -104,6 +104,11 @@ export default function Home() {
               );
             }
           },
+          // tabBarStyle: ({ focused, size, color }) => {
+          //   if (route.name === "Comments") {
+          //   //  return( display: "none");
+          //   }
+          // },
         })}
       >
         <MainStack.Screen name="Posts" component={PostsScreen} />

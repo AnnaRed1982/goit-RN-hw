@@ -31,14 +31,23 @@ export default function PostsScreen({ route }) {
 
   useEffect(() => {
     if (route.params) {
-      const item = route.params;
       setPosts((prevState) => [...prevState, route.params]);
     }
   }, [route.params]);
   console.log("posts--->", posts);
 
   const moveMapScreen = () => {
-    navigation.navigate("Map");
+    navigation.navigate("Comments");
+  };
+  const onMapScreen = (latitude, longitude) => {
+    navigation.navigate("Map", {
+      latitude,
+      longitude,
+    });
+  };
+
+  const onCommentsScreen = (uri) => {
+    navigation.navigate("Comments", {uri});
   };
 
   return (
@@ -53,7 +62,7 @@ export default function PostsScreen({ route }) {
 
       <TouchableOpacity onPress={moveMapScreen}>
         <Text style={[{ marginBottom: 20, fontSize: 20 }]}>
-          Press to MapScreen
+          Press to CommentsScreen
         </Text>
       </TouchableOpacity>
 
@@ -79,7 +88,12 @@ export default function PostsScreen({ route }) {
               <Text style={styles.fotoTitle}>{item.state.fotoTitle}</Text>
 
               <View style={styles.fotoDetails}>
-                <TouchableOpacity style={{}}>
+                <TouchableOpacity
+                  style={{}}
+                  onPress={() => {
+                    onCommentsScreen(item.photo);
+                  }}
+                >
                   <MessageCircle
                     stroke="#BDBDBD"
                     strokeWidth={1}
@@ -88,7 +102,15 @@ export default function PostsScreen({ route }) {
                     style={{ transform: [{ rotate: "270deg" }] }}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.fotoMap}>
+                <TouchableOpacity
+                  style={styles.fotoMap}
+                  onPress={() =>
+                    onMapScreen(
+                      item.state.locationLatitude,
+                      item.state.locationLongitude
+                    )
+                  }
+                >
                   <MapPin
                     stroke="#BDBDBD"
                     strokeWidth={1}
