@@ -35,20 +35,20 @@ enableScreens();
 
 export const useRoute = (isAuth, routeName) => {
   const hide = routeName != "Posts";
-  // if (!isAuth) {
-  //   return (
-  //     <AuthStack.Navigator
-  //       initialRouteName="Login"
-  //       screenOptions={{
-  //         headerShown: false,
-  //         cardStyle: {},
-  //       }}
-  //     >
-  //       <AuthStack.Screen name="Registration" component={RegistrationScreen} />
-  //       <AuthStack.Screen name="Login" component={LoginScreen} />
-  //     </AuthStack.Navigator>
-  //   );
-  // }
+  if (!isAuth) {
+    return (
+      <AuthStack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerShown: false,
+          cardStyle: {},
+        }}
+      >
+        <AuthStack.Screen name="Registration" component={RegistrationScreen} />
+        <AuthStack.Screen name="Login" component={LoginScreen} />
+      </AuthStack.Navigator>
+    );
+  }
   return (
     <MainTab.Navigator
       initialRouteName="Home"

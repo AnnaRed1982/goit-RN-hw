@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
@@ -23,6 +23,14 @@ const { width, height } = Dimensions.get("screen");
 
 export default function CommentsScreen({ route }) {
   const navigation = useNavigation();
+  const [comment, setComment] = useState("");
+
+  const addComment = () => {
+    Keyboard.dismiss();
+    console.log(comment);
+    setComment("");
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[styles.container, { width, height }]}>
@@ -31,11 +39,11 @@ export default function CommentsScreen({ route }) {
         >
           <View style={styles.fotoContainer}>
             <Image
-              // source={{ uri: route.params.uri }}
+              source={{ uri: route.params.uri }}
               style={{
                 flex: 1,
                 height: 240,
-                width,
+                width: "100%",
                 borderRadius: 8,
               }}
             />
@@ -46,21 +54,13 @@ export default function CommentsScreen({ route }) {
           >
             <View style={styles.form}>
               <TextInput
-                // value={state.fotoLocation}
-                // onChangeText={(value) =>
-                //   setState((prevState) => ({
-                //     ...prevState,
-                //     fotoLocation: value,
-                //   }))
-                // }
+                value={comment}
+                onChangeText={(value) => setComment(value)}
                 placeholder="Leave comment..."
                 placeholderTextColor="#BDBDBD"
                 style={styles.input}
               />
-              <TouchableOpacity
-              // style={styles.locationBtn}
-              // onPress={onMapScreen}
-              >
+              <TouchableOpacity onPress={addComment}>
                 <View style={styles.commentsBtn}>
                   <ArrowUp
                     stroke="#FFFFFF"
@@ -110,16 +110,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#212121",
-
-    // paddingTop: 16,
-    // paddingBottom: 15,
-    // borderBottomColor: "#E8E8E8",
-    // borderBottomWidth: 1,
-    // fontFamily: "Roboto-Regular",
-    // fontSize: 16,
-    // lineHeight: 19,
-    // color: "#212121",
-    // paddingLeft: 28,
   },
   commentsBtn: {
     position: "absolute",

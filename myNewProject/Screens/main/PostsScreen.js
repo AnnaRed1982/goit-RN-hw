@@ -34,11 +34,8 @@ export default function PostsScreen({ route }) {
       setPosts((prevState) => [...prevState, route.params]);
     }
   }, [route.params]);
-  console.log("posts--->", posts);
+  // console.log("posts--->", posts);
 
-  const moveMapScreen = () => {
-    navigation.navigate("Comments");
-  };
   const onMapScreen = (latitude, longitude) => {
     navigation.navigate("Map", {
       latitude,
@@ -47,7 +44,7 @@ export default function PostsScreen({ route }) {
   };
 
   const onCommentsScreen = (uri) => {
-    navigation.navigate("Comments", {uri});
+    navigation.navigate("Comments", { uri });
   };
 
   return (
@@ -59,12 +56,6 @@ export default function PostsScreen({ route }) {
           <Text style={styles.emailTitle}>{email}</Text>
         </View>
       </View>
-
-      <TouchableOpacity onPress={moveMapScreen}>
-        <Text style={[{ marginBottom: 20, fontSize: 20 }]}>
-          Press to CommentsScreen
-        </Text>
-      </TouchableOpacity>
 
       <FlatList
         data={posts}
@@ -89,7 +80,7 @@ export default function PostsScreen({ route }) {
 
               <View style={styles.fotoDetails}>
                 <TouchableOpacity
-                  style={{}}
+                  style={styles.comments}
                   onPress={() => {
                     onCommentsScreen(item.photo);
                   }}
@@ -101,6 +92,9 @@ export default function PostsScreen({ route }) {
                     height={24}
                     style={{ transform: [{ rotate: "270deg" }] }}
                   />
+                  <Text style={styles.commentsNumber}>
+                    {item.state.comments.length}
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.fotoMap}
@@ -175,6 +169,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  comments: {
+    flexDirection: "row",
+    gap: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  commentsNumber: {
+    color: "#BDBDBD",
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+  },
   fotoMap: {
     flexDirection: "row",
     gap: 3,
@@ -185,7 +191,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
-    textAlign: "right",
     textDecorationLine: "underline",
   },
 });

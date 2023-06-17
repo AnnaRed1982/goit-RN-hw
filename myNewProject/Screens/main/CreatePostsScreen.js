@@ -28,6 +28,7 @@ const initialState = {
   fotoLocation: "",
   locationLatitude: null,
   locationLongitude: null,
+  comments: [],
 };
 const { width, height } = Dimensions.get("screen");
 

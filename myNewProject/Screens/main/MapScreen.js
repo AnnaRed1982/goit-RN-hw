@@ -25,7 +25,6 @@ export default function MapScreen({ route }) {
   const navigation = useNavigation();
   return (
     <View style={[styles.container, { width, height }]}>
-      {/* <Text>MapScreen</Text> */}
       <MapView
         style={styles.mapStyle}
         region={{
