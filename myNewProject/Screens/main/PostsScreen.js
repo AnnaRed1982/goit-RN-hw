@@ -20,14 +20,14 @@ import {
 
 import { MapPin, MessageCircle } from "react-native-feather";
 
-import { useUser } from "../../services/userContext";
+// import { useUser } from "../../services/userContext";
 
 const { width, height } = Dimensions.get("screen");
 
 export default function PostsScreen({ route }) {
   const [posts, setPosts] = useState([]);
   const navigation = useNavigation();
-  const { login, email } = useUser();
+  // const { login, email } = useUser();
 
   useEffect(() => {
     if (route.params) {
@@ -52,8 +52,8 @@ export default function PostsScreen({ route }) {
       <View style={styles.authBox}>
         <View style={styles.boxFoto}></View>
         <View>
-          <Text style={styles.nameTitle}>{login}</Text>
-          <Text style={styles.emailTitle}>{email}</Text>
+          {/* <Text style={styles.nameTitle}>{login}</Text>
+          <Text style={styles.emailTitle}>{email}</Text> */}
         </View>
       </View>
 

@@ -18,11 +18,20 @@ import {
   Dimensions,
 } from "react-native";
 
-import { useUser } from "../../services/userContext";
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../../redux/auth/authOperations";
+
+// import { useUser } from "../../services/userContext";
 
 const { width, height } = Dimensions.get("screen");
 
+const initialState = {
+  email: "",
+  password: "",
+};
+
 export default function LoginScreen() {
+  const [state, setState] = useState(initialState);
   const [hidePass, setHidePass] = useState(true); //password hide/show
   const [isFocused, setIsFocused] = useState({
     email: false,
@@ -31,8 +40,10 @@ export default function LoginScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
 
   const navigation = useNavigation();
-  const { setIsLoggedIn, setEmail, setPassword, email, password, login } =
-    useUser();
+  // const { setIsLoggedIn, setEmail, setPassword, email, password, login } =
+  //   useUser();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -66,18 +77,21 @@ export default function LoginScreen() {
   };
 
   const onLogin = () => {
-    if (email === "") {
-      return Alert.alert("Email is required");
-    } else if (password === "") {
-      return Alert.alert("Password is required");
-    }
+    // if (email === "") {
+    //   return Alert.alert("Email is required");
+    // } else if (password === "") {
+    //   return Alert.alert("Password is required");
+    // }
 
     Keyboard.dismiss();
-    console.log("Credentials", email, password);
+    dispatch(authSignInUser(state));
     setHidePass(true);
-    setIsLoggedIn(true);
+    setState(initialState);
+
+    // setIsLoggedIn(true);
+    // console.log("Credentials", state);
   };
-  console.log("Credentials", email, password, login);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View
@@ -117,8 +131,10 @@ export default function LoginScreen() {
               }
             >
               <TextInput
-                value={email}
-                onChangeText={(value) => setEmail(value)}
+                value={state.email}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, email: value }))
+                }
                 placeholder="Email adress"
                 autoCapitalize="none"
                 onFocus={() => {
@@ -134,8 +150,10 @@ export default function LoginScreen() {
                 }
               />
               <TextInput
-                value={password}
-                onChangeText={(value) => setPassword(value)}
+                value={state.password}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, password: value }))
+                }
                 placeholder="Password"
                 secureTextEntry={hidePass ? true : false}
                 onFocus={() => {
@@ -168,8 +186,8 @@ export default function LoginScreen() {
                 isKeyboardActive ? [{ display: "none" }] : [{ display: "flex" }]
               }
               onPress={() => {
-                setEmail("");
-                setPassword("");
+                // setEmail("");
+                // setPassword("");
                 navigation.navigate("Registration");
               }}
             >

@@ -7,7 +7,7 @@ import PostsScreen from "./PostsScreen";
 import CommentsScreen from "./CommentsScreen";
 import MapScreen from "./MapScreen";
 
-import { useUser } from "../../services/userContext";
+// import { useUser } from "../../services/userContext";
 
 import {
   StyleSheet,
@@ -31,15 +31,15 @@ const MainStack = createStackNavigator();
 
 export default function Home() {
   const navigation = useNavigation();
-  const {
-    setIsLoggedIn,
-    setLogin,
-    setEmail,
-    setPassword,
-    email,
-    password,
-    login,
-  } = useUser();
+  // const {
+  //   setIsLoggedIn,
+  //   setLogin,
+  //   setEmail,
+  //   setPassword,
+  //   email,
+  //   password,
+  //   login,
+  // } = useUser();
   return (
     <>
       <MainStack.Navigator
@@ -87,12 +87,12 @@ export default function Home() {
             if (route.name === "Posts") {
               return (
                 <TouchableOpacity
-                  onPress={() => {
-                    setIsLoggedIn(false);
-                    setLogin("");
-                    setEmail("");
-                    setPassword("");
-                  }}
+                  // onPress={() => {
+                  //   setIsLoggedIn(false);
+                  //   setLogin("");
+                  //   setEmail("");
+                  //   setPassword("");
+                  // }}
                 >
                   <LogOut
                     stroke="rgba(189, 189, 189, 1)"

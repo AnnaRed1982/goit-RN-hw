@@ -1,6 +1,11 @@
 import React, { useState, useCallback, useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNavigationContainerRef } from "@react-navigation/native";
+import { Provider } from "react-redux";
+
+// import db from "./firebase/config";
+import { auth } from "./firebase/config";
+import { onAuthStateChanged } from "firebase/auth";
 
 import { StyleSheet, View } from "react-native";
 
@@ -9,16 +14,21 @@ import * as SplashScreen from "expo-splash-screen"; //fonts
 SplashScreen.preventAutoHideAsync(); //fonts
 
 import { useRoute } from "./router";
-import { UserContext } from "./services/userContext";
+import { store } from "./redux/store";
+// import { useDispatch } from "react-redux";
+// import { authStateChanged } from "./redux/auth/authOperations";
+
+// import { UserContext } from "./services/userContext";
 
 const ref = createNavigationContainerRef();
 
 export default function App() {
   const [routeName, setRouteName] = useState();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [login, setLogin] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState(null);
+  // const [isLoggedIn, setIsLoggedIn] = useState(user);
+  // const [login, setLogin] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
@@ -36,9 +46,13 @@ export default function App() {
     return null;
   }
 
+  onAuthStateChanged(auth, (user) => {
+    setUser(user);
+  });
+
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <UserContext.Provider
+      {/* <UserContext.Provider
         value={{
           setIsLoggedIn,
           login,
@@ -48,7 +62,8 @@ export default function App() {
           password,
           setPassword,
         }}
-      >
+      > */}
+      <Provider store={store}>
         <NavigationContainer
           ref={ref}
           onReady={() => {
@@ -60,9 +75,10 @@ export default function App() {
             setRouteName(currentRouteName);
           }}
         >
-          {useRoute(isLoggedIn, routeName)}
+          {useRoute(user, routeName)}
         </NavigationContainer>
-      </UserContext.Provider>
+      </Provider>
+      {/* </UserContext.Provider> */}
     </View>
   );
 }

@@ -17,14 +17,28 @@ import {
   Dimensions,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+
+import { authSignUpUser } from "../../redux/auth/authOperations";
+
 import { Plus } from "react-native-feather";
 
-import { useUser } from "../../services/userContext";
+// import { useUser } from "../../services/userContext";
 
 const { width, height } = Dimensions.get("screen");
 
+const initialState = {
+  login: "",
+  email: "",
+  password: "",
+};
+
 export default function RegistrationScreen() {
   const [hidePass, setHidePass] = useState(true); //password
+  const [state, setState] = useState(initialState);
+
+  const dispatch = useDispatch();
+
   const [isFocused, setIsFocused] = useState({
     name: false,
     email: false,
@@ -33,15 +47,15 @@ export default function RegistrationScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
 
   const navigation = useNavigation();
-  const {
-    setIsLoggedIn,
-    setLogin,
-    setEmail,
-    setPassword,
-    email,
-    password,
-    login,
-  } = useUser();
+  // const {
+  //   setIsLoggedIn,
+  //   setLogin,
+  //   setEmail,
+  //   setPassword,
+  //   email,
+  //   password,
+  //   login,
+  // } = useUser();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -75,18 +89,21 @@ export default function RegistrationScreen() {
   };
 
   const onLogin = () => {
-    if (login === "") {
-      return Alert.alert("Login is required");
-    } else if (email === "") {
-      return Alert.alert("Email is required");
-    } else if (password === "") {
-      return Alert.alert("Password is required");
-    }
+    // if (login === "") {
+    //   return Alert.alert("Login is required");
+    // } else if (email === "") {
+    //   return Alert.alert("Email is required");
+    // } else if (password === "") {
+    //   return Alert.alert("Password is required");
+    // }
 
     Keyboard.dismiss();
-    console.log("Credentials", login, email, password);
     setHidePass(true);
-    setIsLoggedIn(true);
+    dispatch(authSignUpUser(state));
+    setState(initialState);
+
+    // console.log("Credentials", state);
+    // setIsLoggedIn(true);
   };
 
   return (
@@ -136,8 +153,10 @@ export default function RegistrationScreen() {
               }
             >
               <TextInput
-                value={login}
-                onChangeText={(value) => setLogin(value)}
+                value={state.login}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, login: value }))
+                }
                 placeholder="Login"
                 autoCapitalize="none"
                 onFocus={() => {
@@ -153,8 +172,10 @@ export default function RegistrationScreen() {
                 }
               />
               <TextInput
-                value={email}
-                onChangeText={(value) => setEmail(value)}
+                value={state.email}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, email: value }))
+                }
                 placeholder="Email adress"
                 autoCapitalize="none"
                 onFocus={() => {
@@ -170,8 +191,10 @@ export default function RegistrationScreen() {
                 }
               />
               <TextInput
-                value={password}
-                onChangeText={(value) => setPassword(value)}
+                value={state.password}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, password: value }))
+                }
                 placeholder="Password"
                 secureTextEntry={hidePass ? true : false}
                 onFocus={() => {
@@ -204,9 +227,9 @@ export default function RegistrationScreen() {
                 isKeyboardActive ? [{ display: "none" }] : [{ display: "flex" }]
               }
               onPress={() => {
-                setLogin("");
-                setEmail("");
-                setPassword("");
+                // setLogin("");
+                // setEmail("");
+                // setPassword("");
                 navigation.navigate("Login");
               }}
             >

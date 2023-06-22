@@ -21,19 +21,19 @@ import { LogOut, Plus } from "react-native-feather";
 
 const { width, height } = Dimensions.get("screen");
 
-import { useUser } from "../../services/userContext";
+// import { useUser } from "../../services/userContext";
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-  const {
-    setIsLoggedIn,
-    setLogin,
-    setEmail,
-    setPassword,
-    email,
-    password,
-    login,
-  } = useUser();
+  // const {
+  //   setIsLoggedIn,
+  //   setLogin,
+  //   setEmail,
+  //   setPassword,
+  //   email,
+  //   password,
+  //   login,
+  // } = useUser();
 
   const isFocused = useIsFocused();
   return (
@@ -65,12 +65,12 @@ export default function ProfileScreen() {
         </View>
         <TouchableOpacity
           style={styles.logOutBtn}
-          onPress={() => {
-            setIsLoggedIn(false);
-            setLogin("");
-            setEmail("");
-            setPassword("");
-          }}
+          // onPress={() => {
+          //   setIsLoggedIn(false);
+          //   setLogin("");
+          //   setEmail("");
+          //   setPassword("");
+          // }}
         >
           <LogOut
             stroke="rgba(189, 189, 189, 1)"
