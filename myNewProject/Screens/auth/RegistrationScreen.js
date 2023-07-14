@@ -18,7 +18,6 @@ import {
 } from "react-native";
 
 import { useDispatch } from "react-redux";
-
 import { authSignUpUser } from "../../redux/auth/authOperations";
 
 import { Plus } from "react-native-feather";

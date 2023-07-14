@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useContext } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNavigationContainerRef } from "@react-navigation/native";
+import React, { useState, useCallback } from "react";
+// import { NavigationContainer } from "@react-navigation/native";
+// import { createNavigationContainerRef } from "@react-navigation/native";
 import { Provider } from "react-redux";
 
 // import db from "./firebase/config";
-import { auth } from "./firebase/config";
-import { onAuthStateChanged } from "firebase/auth";
+// import { auth } from "./firebase/config";
+// import { onAuthStateChanged } from "firebase/auth";
 
 import { StyleSheet, View } from "react-native";
 
@@ -13,18 +13,21 @@ import { useFonts } from "expo-font"; //fonts
 import * as SplashScreen from "expo-splash-screen"; //fonts
 SplashScreen.preventAutoHideAsync(); //fonts
 
-import { useRoute } from "./router";
+// import { useRoute } from "./router";
 import { store } from "./redux/store";
+
+import Main from "./components/Main";
+
 // import { useDispatch } from "react-redux";
 // import { authStateChanged } from "./redux/auth/authOperations";
 
 // import { UserContext } from "./services/userContext";
 
-const ref = createNavigationContainerRef();
+// const ref = createNavigationContainerRef();
 
 export default function App() {
-  const [routeName, setRouteName] = useState();
-  const [user, setUser] = useState(null);
+  // const [routeName, setRouteName] = useState();
+  // const [user, setUser] = useState(null);
   // const [isLoggedIn, setIsLoggedIn] = useState(user);
   // const [login, setLogin] = useState("");
   // const [email, setEmail] = useState("");
@@ -46,9 +49,9 @@ export default function App() {
     return null;
   }
 
-  onAuthStateChanged(auth, (user) => {
-    setUser(user);
-  });
+  // onAuthStateChanged(auth, (user) => {
+  //   setUser(user);
+  // });
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
@@ -64,7 +67,8 @@ export default function App() {
         }}
       > */}
       <Provider store={store}>
-        <NavigationContainer
+        <Main />
+        {/* <NavigationContainer
           ref={ref}
           onReady={() => {
             setRouteName(ref.getCurrentRoute().name);
@@ -76,7 +80,7 @@ export default function App() {
           }}
         >
           {useRoute(user, routeName)}
-        </NavigationContainer>
+        </NavigationContainer> */}
       </Provider>
       {/* </UserContext.Provider> */}
     </View>
