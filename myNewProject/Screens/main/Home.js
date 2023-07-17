@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import PostsScreen from "./PostsScreen";
 import CommentsScreen from "./CommentsScreen";
 import MapScreen from "./MapScreen";
 
+import { authSignOutUser } from "../../redux/auth/authOperations";
 // import { useUser } from "../../services/userContext";
 
 import {
@@ -31,15 +33,12 @@ const MainStack = createStackNavigator();
 
 export default function Home() {
   const navigation = useNavigation();
-  // const {
-  //   setIsLoggedIn,
-  //   setLogin,
-  //   setEmail,
-  //   setPassword,
-  //   email,
-  //   password,
-  //   login,
-  // } = useUser();
+  const dispatch = useDispatch();
+
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
+
   return (
     <>
       <MainStack.Navigator
@@ -86,14 +85,7 @@ export default function Home() {
           headerRight: ({ focused, size, color }) => {
             if (route.name === "Posts") {
               return (
-                <TouchableOpacity
-                  // onPress={() => {
-                  //   setIsLoggedIn(false);
-                  //   setLogin("");
-                  //   setEmail("");
-                  //   setPassword("");
-                  // }}
-                >
+                <TouchableOpacity onPress={signOut}>
                   <LogOut
                     stroke="rgba(189, 189, 189, 1)"
                     strokeWidth={1}

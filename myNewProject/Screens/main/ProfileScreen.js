@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import {
   StyleSheet,
@@ -21,19 +22,17 @@ import { LogOut, Plus } from "react-native-feather";
 
 const { width, height } = Dimensions.get("screen");
 
+import { authSignOutUser } from "../../redux/auth/authOperations";
 // import { useUser } from "../../services/userContext";
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-  // const {
-  //   setIsLoggedIn,
-  //   setLogin,
-  //   setEmail,
-  //   setPassword,
-  //   email,
-  //   password,
-  //   login,
-  // } = useUser();
+
+  const dispatch = useDispatch();
+
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
 
   const isFocused = useIsFocused();
   return (
@@ -63,15 +62,7 @@ export default function ProfileScreen() {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={styles.logOutBtn}
-          // onPress={() => {
-          //   setIsLoggedIn(false);
-          //   setLogin("");
-          //   setEmail("");
-          //   setPassword("");
-          // }}
-        >
+        <TouchableOpacity style={styles.logOutBtn} onPress={signOut}>
           <LogOut
             stroke="rgba(189, 189, 189, 1)"
             strokeWidth={1}

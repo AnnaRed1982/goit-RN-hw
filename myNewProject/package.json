@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/react-native": "^5.0.4",
+    "@expo/metro-config": "^0.10.6",
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^18.0.1",
     "@react-native-async-storage/async-storage": "1.17.11",
@@ -33,6 +34,7 @@
     "expo-status-bar": "~1.4.2",
     "feather-icons": "^4.29.0",
     "firebase": "^9.22.2",
+    "patch-package": "^7.0.2",
     "react": "18.2.0",
     "react-devtools": "^4.27.4",
     "react-devtools-core": "^4.27.4",

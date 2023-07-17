@@ -3,9 +3,12 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   updateProfile,
+  signOut,
 } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { authSlice } from "./authReducer";
+
+const { updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
 
 export const authSignUpUser =
   ({ email, password, login }) =>
@@ -29,27 +32,43 @@ export const authSignUpUser =
     }
   };
 
-export const authStateChanged = async (onChange = () => {}) => {
-  onAuthStateChanged((user) => {
-    onChange(user);
+export const authStateChangedUser = () => async (dispatch, getState) => {
+  await onAuthStateChanged(auth, (user) => {
+    if (user) {
+      dispatch(
+        authSlice.actions.updateUserProfile({
+          userId: user.uid,
+          login: user.displayName,
+        })
+      );
+      dispatch(
+        authSlice.actions.authStateChange({
+          stateChange: true,
+        })
+      );
+    }
   });
 };
+
+// const authStateChanged = async (onChange = () => {}) => {
+//   onAuthStateChanged((user) => {
+//     onChange(user);
+//   });
+// };
 
 export const authSignInUser =
   ({ email, password }) =>
   async (dispatch, getState) => {
     try {
-      const credentials = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(credentials.user);
-
-      return credentials.user;
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      console.log(user);
+      // return credentials.user;
     } catch (error) {
       console.log(error.message);
     }
   };
 
-export const authSignOutUser = () => async (dispatch, getState) => {};
+export const authSignOutUser = () => async (dispatch, getState) => {
+  await signOut(auth);
+  dispatch(authSignOut());
+};
