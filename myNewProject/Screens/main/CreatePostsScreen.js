@@ -29,6 +29,7 @@ import {
   ref as sRef,
   uploadBytes,
   uploadBytesResumable,
+  getDownloadURL,
 } from "firebase/storage";
 
 const initialState = {
@@ -60,7 +61,7 @@ export default function CreatePostsScreen() {
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
-    console.log("location", location);
+    // console.log("location", location);
 
     setState((prevState) => ({
       ...prevState,
@@ -102,7 +103,11 @@ export default function CreatePostsScreen() {
       const uniquePostId = Date.now().toString();
 
       const storageRef = sRef(storage, `postImage/${uniquePostId}`);
-      uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, file);
+
+      const procesPhoto = await getDownloadURL(storageRef);
+
+      console.log("procesPhoto", procesPhoto);
     } catch (e) {
       console.error("Error adding foto: ", e);
       throw e;
