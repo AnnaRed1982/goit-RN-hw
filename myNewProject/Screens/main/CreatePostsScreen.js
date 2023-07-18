@@ -23,6 +23,14 @@ import {
 import { MapPin, Trash2 } from "react-native-feather";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { storage } from "../../firebase/config";
+
+import {
+  ref as sRef,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
+
 const initialState = {
   fotoTitle: "",
   fotoLocation: "",
@@ -74,15 +82,31 @@ export default function CreatePostsScreen() {
 
   const onPost = () => {
     Keyboard.dismiss();
-    console.log("Foto", state);
+    // console.log("Foto", state);
     setState(initialState);
     setPhoto("");
+
+    uploadPhotoToServer();
     navigation.navigate("Posts", { photo, state });
   };
 
   const onDelete = () => {
     setState(initialState);
     setPhoto("");
+  };
+
+  const uploadPhotoToServer = async () => {
+    try {
+      const response = await fetch(photo);
+      const file = await response.blob();
+      const uniquePostId = Date.now().toString();
+
+      const storageRef = sRef(storage, `postImage/${uniquePostId}`);
+      uploadBytes(storageRef, file);
+    } catch (e) {
+      console.error("Error adding foto: ", e);
+      throw e;
+    }
   };
 
   return (
