@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
 
@@ -23,14 +24,16 @@ import {
 import { MapPin, Trash2 } from "react-native-feather";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { storage } from "../../firebase/config";
+import { selectState } from "../../redux/auth/authSelectors";
 
+import { storage, db } from "../../firebase/config";
 import {
   ref as sRef,
   uploadBytes,
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
 
 const initialState = {
   fotoTitle: "",
@@ -48,6 +51,8 @@ export default function CreatePostsScreen() {
 
   const navigation = useNavigation();
   let isFocused = useIsFocused();
+
+  const { userId, login } = useSelector(selectState);
 
   useEffect(() => {
     (async () => {
@@ -81,19 +86,38 @@ export default function CreatePostsScreen() {
     });
   };
 
-  const onPost = () => {
+  const onPost = async () => {
     Keyboard.dismiss();
     // console.log("Foto", state);
     setState(initialState);
     setPhoto("");
 
-    uploadPhotoToServer();
+    await upLoadPostToServer();
     navigation.navigate("Posts", { photo, state });
   };
 
   const onDelete = () => {
     setState(initialState);
     setPhoto("");
+  };
+
+  const upLoadPostToServer = async () => {
+    try {
+      photoURL = await uploadPhotoToServer();
+      const docRef = await addDoc(collection(db, "posts"), {
+        photo: photoURL,
+        fotoTitle: state.fotoTitle,
+        fotoLocation: state.fotoLocation,
+        locationLatitude: state.locationLatitude,
+        locationLongitude: state.locationLongitude,
+        userId,
+        login,
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      throw e;
+    }
   };
 
   const uploadPhotoToServer = async () => {
@@ -107,7 +131,7 @@ export default function CreatePostsScreen() {
 
       const procesPhoto = await getDownloadURL(storageRef);
 
-      console.log("procesPhoto", procesPhoto);
+      return procesPhoto;
     } catch (e) {
       console.error("Error adding foto: ", e);
       throw e;

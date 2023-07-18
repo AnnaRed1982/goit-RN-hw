@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 import {
   StyleSheet,
   Image,
@@ -21,6 +22,7 @@ import {
 import { MapPin, MessageCircle } from "react-native-feather";
 
 // import { useUser } from "../../services/userContext";
+import { selectState } from "../../redux/auth/authSelectors";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -28,6 +30,7 @@ export default function PostsScreen({ route }) {
   const [posts, setPosts] = useState([]);
   const navigation = useNavigation();
   // const { login, email } = useUser();
+  const { login, email } = useSelector(selectState);
 
   useEffect(() => {
     if (route.params) {
@@ -52,8 +55,8 @@ export default function PostsScreen({ route }) {
       <View style={styles.authBox}>
         <View style={styles.boxFoto}></View>
         <View>
-          {/* <Text style={styles.nameTitle}>{login}</Text>
-          <Text style={styles.emailTitle}>{email}</Text> */}
+          <Text style={styles.nameTitle}>{login}</Text>
+          <Text style={styles.emailTitle}>{email}</Text>
         </View>
       </View>
 

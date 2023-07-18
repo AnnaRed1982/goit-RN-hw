@@ -25,6 +25,7 @@ export const authSignUpUser =
         authSlice.actions.updateUserProfile({
           userId: uid,
           login: displayName,
+          email,
         })
       );
     } catch (error) {
@@ -39,6 +40,7 @@ export const authStateChangedUser = () => async (dispatch, getState) => {
         authSlice.actions.updateUserProfile({
           userId: user.uid,
           login: user.displayName,
+          email: user.email,
         })
       );
       dispatch(
