@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+
+import { db } from "../../firebase/config";
+import { collection, getDocs } from "firebase/firestore";
+
 import {
   StyleSheet,
   Image,
@@ -32,11 +36,36 @@ export default function PostsScreen({ route }) {
   // const { login, email } = useUser();
   const { login, email } = useSelector(selectState);
 
-  useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
+  const getAllPosts = async () => {
+    try {
+      const snapshot = await getDocs(collection(db, "posts"));
+      // Перевіряємо у консолі отримані дані
+      // snapshot.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
+      if (snapshot.docs.length > 0) {
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+      }
+      return;
+      // console.log("posts", posts);
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
-  }, [route.params]);
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
+  // useEffect(() => {
+  //   if (route.params) {
+  //     setPosts((prevState) => [...prevState, route.params]);
+  //   }
+  // }, [route.params]);
   // console.log("posts--->", posts);
 
   const onMapScreen = (latitude, longitude) => {
@@ -46,9 +75,9 @@ export default function PostsScreen({ route }) {
     });
   };
 
-  const onCommentsScreen = (uri) => {
-    navigation.navigate("Comments", { uri });
-  };
+  // const onCommentsScreen = (uri) => {
+  //   navigation.navigate("Comments", { uri });
+  // };
 
   return (
     <View style={[styles.container, { width, height }]}>
@@ -79,13 +108,17 @@ export default function PostsScreen({ route }) {
                   marginBottom: 8,
                 }}
               />
-              <Text style={styles.fotoTitle}>{item.state.fotoTitle}</Text>
+              <Text style={styles.fotoTitle}>{item.fotoTitle}</Text>
 
               <View style={styles.fotoDetails}>
                 <TouchableOpacity
                   style={styles.comments}
                   onPress={() => {
-                    onCommentsScreen(item.photo);
+                    navigation.navigate("Comments", {
+                      postId: item.id,
+                      uri: item.photo,
+                    });
+                    // onCommentsScreen(item.photo.uri);
                   }}
                 >
                   <MessageCircle
@@ -95,17 +128,14 @@ export default function PostsScreen({ route }) {
                     height={24}
                     style={{ transform: [{ rotate: "270deg" }] }}
                   />
-                  <Text style={styles.commentsNumber}>
+                  {/* <Text style={styles.commentsNumber}>
                     {item.state.comments.length}
-                  </Text>
+                  </Text> */}
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.fotoMap}
                   onPress={() =>
-                    onMapScreen(
-                      item.state.locationLatitude,
-                      item.state.locationLongitude
-                    )
+                    onMapScreen(item.locationLatitude, item.locationLongitude)
                   }
                 >
                   <MapPin
@@ -114,9 +144,7 @@ export default function PostsScreen({ route }) {
                     width={24}
                     height={24}
                   />
-                  <Text style={styles.fotoLocation}>
-                    {item.state.fotoLocation}
-                  </Text>
+                  <Text style={styles.fotoLocation}>{item.fotoLocation}</Text>
                 </TouchableOpacity>
               </View>
             </View>

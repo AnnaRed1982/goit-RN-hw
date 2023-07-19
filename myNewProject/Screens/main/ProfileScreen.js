@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import {
   StyleSheet,
@@ -23,11 +23,12 @@ import { LogOut, Plus } from "react-native-feather";
 const { width, height } = Dimensions.get("screen");
 
 import { authSignOutUser } from "../../redux/auth/authOperations";
+import { selectState } from "../../redux/auth/authSelectors";
 // import { useUser } from "../../services/userContext";
 
 export default function ProfileScreen() {
+  const { login } = useSelector(selectState);
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
 
   const signOut = () => {
@@ -70,6 +71,7 @@ export default function ProfileScreen() {
             height={24}
           />
         </TouchableOpacity>
+        <Text style={styles.nameTitle}>{login}</Text>
       </View>
     </View>
   );
@@ -112,5 +114,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 335,
     top: 32,
+  },
+  nameTitle: {
+    color: "#212121",
+    fontFamily: "Roboto-Medium",
+    fontSize: 30,
+    lineHeight: 36,
+    letterSpacing: 0.3,
   },
 });

@@ -93,7 +93,7 @@ export default function CreatePostsScreen() {
     setPhoto("");
 
     await upLoadPostToServer();
-    navigation.navigate("Posts", { photo, state });
+    navigation.navigate("Posts");
   };
 
   const onDelete = () => {
@@ -104,7 +104,8 @@ export default function CreatePostsScreen() {
   const upLoadPostToServer = async () => {
     try {
       photoURL = await uploadPhotoToServer();
-      const docRef = await addDoc(collection(db, "posts"), {
+      
+      await addDoc(collection(db, "posts"), {
         photo: photoURL,
         fotoTitle: state.fotoTitle,
         fotoLocation: state.fotoLocation,
@@ -113,7 +114,7 @@ export default function CreatePostsScreen() {
         userId,
         login,
       });
-      console.log("Document written with ID: ", docRef.id);
+      // console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
       throw e;

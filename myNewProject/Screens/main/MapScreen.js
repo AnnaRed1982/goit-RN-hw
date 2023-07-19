@@ -28,8 +28,8 @@ export default function MapScreen({ route }) {
       <MapView
         style={styles.mapStyle}
         region={{
-          longitude: 30.602185,
-          latitude: 50.516339,
+          latitude: route.params.latitude,
+          longitude: route.params.longitude,
           latitudeDelta: 0.2,
           longitudeDelta: 0.2,
         }}

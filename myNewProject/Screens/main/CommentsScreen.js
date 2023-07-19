@@ -1,5 +1,18 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+
+import { useSelector } from "react-redux";
+
+import { db } from "../../firebase/config";
+import {
+  collection,
+  addDoc,
+  getDoc,
+  getDocs,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+
 import {
   StyleSheet,
   Image,
@@ -19,16 +32,42 @@ import {
 
 import { ArrowUp } from "react-native-feather";
 
+import { selectState } from "../../redux/auth/authSelectors";
+
 const { width, height } = Dimensions.get("screen");
 
 export default function CommentsScreen({ route }) {
   const navigation = useNavigation();
+  const { postId, uri } = route.params;
+
+  const { login } = useSelector(selectState);
   const [comment, setComment] = useState("");
 
-  const addComment = () => {
+  const addComment = async () => {
     Keyboard.dismiss();
-    console.log(comment);
-    setComment("");
+    // console.log(comment);
+
+    try {
+      // await getDocs(collection(db, "posts"))
+      //   .doc(db, "comments", postId)
+      // .addDoc(collection(db, "comments"), {
+      //   login,
+      //   comment,
+      // });
+
+      const postsCollection = doc(db, "posts", postId);
+      await addDoc(collection(postsCollection, "comments"), {
+        login,
+        comment,
+      });
+
+      setComment("");
+      return;
+      // console.log("posts", posts);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   return (
@@ -39,7 +78,7 @@ export default function CommentsScreen({ route }) {
         >
           <View style={styles.fotoContainer}>
             <Image
-              source={{ uri: route.params.uri }}
+              source={{ uri }}
               style={{
                 flex: 1,
                 height: 240,
