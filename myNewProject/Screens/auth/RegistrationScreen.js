@@ -21,6 +21,9 @@ import {
 import { useDispatch } from "react-redux";
 import { authSignUpUser } from "../../redux/auth/authOperations";
 
+import { storage } from "../../firebase/config";
+import { ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import { Plus } from "react-native-feather";
 
 const { width, height } = Dimensions.get("screen");
@@ -90,6 +93,10 @@ export default function RegistrationScreen() {
 
     Keyboard.dismiss();
     setHidePass(true);
+    uploadAvatarToServer();
+    if (!state.avatar) {
+      setState((prevState) => ({ ...prevState, avatar: "" }));
+    }
     dispatch(authSignUpUser(state));
     setState(initialState);
   };
@@ -112,7 +119,26 @@ export default function RegistrationScreen() {
 
   const deleteAvatar = () => {
     setState((prevState) => ({ ...prevState, avatar: null }));
-  }
+  };
+
+  const uploadAvatarToServer = async () => {
+    try {
+      const response = await fetch(state.avatar);
+      const file = await response.blob();
+      const uniquePostId = Date.now().toString();
+
+      const storageRef = sRef(storage, `avatars/${uniquePostId}`);
+      await uploadBytes(storageRef, file);
+
+      const procesPhoto = await getDownloadURL(storageRef);
+      setState((prevState) => ({ ...prevState, avatar: procesPhoto }));
+
+      //return procesPhoto;
+    } catch (e) {
+      console.error("Error adding foto: ", e);
+      throw e;
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   Image,
@@ -32,8 +32,9 @@ import { MapPin, MessageCircle } from "react-native-feather";
 
 export default function ProfileScreen() {
   const [userPosts, setUsersPosts] = useState([]);
-  const { login, userId } = useSelector(selectState);
+  const { login, userId, photoURL } = useSelector(selectState);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   useEffect(() => {
     getUserPostsByUserId();
@@ -83,6 +84,7 @@ export default function ProfileScreen() {
       />
       <View style={styles.gallaryContainer}>
         <View style={styles.boxFoto}>
+          <Image style={styles.avatarFoto} source={{ uri: photoURL }} />
           <TouchableOpacity
             style={styles.boxFotoBtn}
             // onPress={}
@@ -192,6 +194,15 @@ const styles = StyleSheet.create({
     height: 120,
     left: (width - 25 - 16 * 2) / 2.5,
     top: -52,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  avatarFoto: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    left: 0,
+    top: 0,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },

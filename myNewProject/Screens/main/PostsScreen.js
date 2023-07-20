@@ -32,7 +32,9 @@ const { width, height } = Dimensions.get("screen");
 export default function PostsScreen({ route }) {
   const [posts, setPosts] = useState([]);
   const navigation = useNavigation();
-  const { login, email } = useSelector(selectState);
+  const { login, email, photoURL } = useSelector(selectState);
+
+  console.log(photoURL);
 
   useEffect(() => {
     getAllPosts();
@@ -70,7 +72,9 @@ export default function PostsScreen({ route }) {
   return (
     <View style={[styles.container, { width, height }]}>
       <View style={styles.authBox}>
-        <View style={styles.boxFoto}></View>
+        <View style={styles.boxFoto}>
+          <Image style={styles.boxFoto} source={{ uri: photoURL }} />
+        </View>
         <View>
           <Text style={styles.nameTitle}>{login}</Text>
           <Text style={styles.emailTitle}>{email}</Text>
