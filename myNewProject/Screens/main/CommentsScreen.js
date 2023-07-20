@@ -62,6 +62,7 @@ export default function CommentsScreen({ route }) {
       const snapshot = await getDocs(
         collection(postsCollectionRef, "comments")
       );
+
       if (snapshot.docs.length > 0) {
         setAllComments(
           snapshot.docs.map((doc) => ({

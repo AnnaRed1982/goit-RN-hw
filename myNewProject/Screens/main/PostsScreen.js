@@ -25,7 +25,6 @@ import {
 
 import { MapPin, MessageCircle } from "react-native-feather";
 
-// import { useUser } from "../../services/userContext";
 import { selectState } from "../../redux/auth/authSelectors";
 
 const { width, height } = Dimensions.get("screen");
@@ -42,11 +41,12 @@ export default function PostsScreen({ route }) {
   const getAllPosts = async () => {
     try {
       const snapshot = await getDocs(collection(db, "posts"));
+
       // Перевіряємо у консолі отримані дані
       // snapshot.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
 
       if (snapshot.docs.length > 0) {
-        await setPosts(
+        setPosts(
           snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),

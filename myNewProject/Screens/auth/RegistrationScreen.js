@@ -22,8 +22,6 @@ import { authSignUpUser } from "../../redux/auth/authOperations";
 
 import { Plus } from "react-native-feather";
 
-// import { useUser } from "../../services/userContext";
-
 const { width, height } = Dimensions.get("screen");
 
 const initialState = {
@@ -46,15 +44,6 @@ export default function RegistrationScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
 
   const navigation = useNavigation();
-  // const {
-  //   setIsLoggedIn,
-  //   setLogin,
-  //   setEmail,
-  //   setPassword,
-  //   email,
-  //   password,
-  //   login,
-  // } = useUser();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -257,7 +246,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 120,
     height: 120,
-    left: 120,
+    left: (width - 25 - 16 * 2) / 2.5,
     top: -52,
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
