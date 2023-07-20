@@ -93,8 +93,8 @@ export default function RegistrationScreen() {
 
     Keyboard.dismiss();
     setHidePass(true);
-    uploadAvatarToServer();
-    if (!state.avatar) {
+    const procesPhoto = uploadAvatarToServer();
+    if (!procesPhoto) {
       setState((prevState) => ({ ...prevState, avatar: "" }));
     }
     dispatch(authSignUpUser(state));
@@ -123,17 +123,25 @@ export default function RegistrationScreen() {
 
   const uploadAvatarToServer = async () => {
     try {
-      const response = await fetch(state.avatar);
-      const file = await response.blob();
-      const uniquePostId = Date.now().toString();
+      // const response = await fetch(state.avatar);
 
-      const storageRef = sRef(storage, `avatars/${uniquePostId}`);
-      await uploadBytes(storageRef, file);
+      // if (!response) {
+      //   setState((prevState) => ({ ...prevState, avatar: "" }));
+      //   return;
+      // }
+      if (state.avatar) {
+        const file = await state.avatar.blob();
+        const uniquePostId = Date.now().toString();
 
-      const procesPhoto = await getDownloadURL(storageRef);
-      setState((prevState) => ({ ...prevState, avatar: procesPhoto }));
+        const storageRef = sRef(storage, `avatars/${uniquePostId}`);
+        await uploadBytes(storageRef, file);
 
-      //return procesPhoto;
+        const procesPhoto = await getDownloadURL(storageRef);
+
+        setState((prevState) => ({ ...prevState, avatar: procesPhoto }));
+
+        return procesPhoto;
+      }
     } catch (e) {
       console.error("Error adding foto: ", e);
       throw e;
