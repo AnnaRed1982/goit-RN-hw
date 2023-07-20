@@ -1,17 +1,8 @@
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import { db } from "../../firebase/config";
-import {
-  collection,
-  addDoc,
-  getDoc,
-  getDocs,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, addDoc, getDocs, doc } from "firebase/firestore";
 
 import {
   StyleSheet,
@@ -28,6 +19,7 @@ import {
   Dimensions,
   View,
   Text,
+  FlatList,
 } from "react-native";
 
 import { ArrowUp } from "react-native-feather";
@@ -37,33 +29,48 @@ import { selectState } from "../../redux/auth/authSelectors";
 const { width, height } = Dimensions.get("screen");
 
 export default function CommentsScreen({ route }) {
-  const navigation = useNavigation();
   const { postId, uri } = route.params;
-
   const { login } = useSelector(selectState);
   const [comment, setComment] = useState("");
+  const [allComments, setAllComments] = useState([]);
 
+  useEffect(() => {
+    getAllComments();
+  }, []);
+
+  //add comment
   const addComment = async () => {
     Keyboard.dismiss();
-    // console.log(comment);
-
     try {
-      // await getDocs(collection(db, "posts"))
-      //   .doc(db, "comments", postId)
-      // .addDoc(collection(db, "comments"), {
-      //   login,
-      //   comment,
-      // });
-
-      const postsCollection = doc(db, "posts", postId);
-      await addDoc(collection(postsCollection, "comments"), {
+      const postsCollectionRef = doc(db, "posts", postId);
+      await addDoc(collection(postsCollectionRef, "comments"), {
         login,
         comment,
       });
-
       setComment("");
       return;
-      // console.log("posts", posts);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  //get all comments
+  const getAllComments = async () => {
+    try {
+      const postsCollectionRef = doc(db, "posts", postId);
+      const snapshot = await getDocs(
+        collection(postsCollectionRef, "comments")
+      );
+      if (snapshot.docs.length > 0) {
+        setAllComments(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+      }
+      return;
     } catch (error) {
       console.log(error);
       throw error;
@@ -87,6 +94,24 @@ export default function CommentsScreen({ route }) {
               }}
             />
           </View>
+          {/* /////////////////////////////////////////////////////////////////////////// */}
+          <FlatList
+            data={allComments}
+            keyExtractor={(item, indx) => indx.toString()}
+            renderItem={({ item }) => {
+              return (
+                <View
+                  style={{
+                    marginBottom: 32,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={styles.comment}>{item.login}</Text>
+                  <Text style={styles.comment}>{item.comment}</Text>
+                </View>
+              );
+            }}
+          />
           {/* /////////////////////////////////////////////////////////////////////////// */}
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : undefined}
@@ -160,5 +185,12 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 34 / 2,
     backgroundColor: "#FF6C00",
+  },
+  comment: {
+    color: "#212121",
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    textDecorationLine: "underline",
   },
 });

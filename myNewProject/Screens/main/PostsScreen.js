@@ -33,16 +33,20 @@ const { width, height } = Dimensions.get("screen");
 export default function PostsScreen({ route }) {
   const [posts, setPosts] = useState([]);
   const navigation = useNavigation();
-  // const { login, email } = useUser();
   const { login, email } = useSelector(selectState);
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
   const getAllPosts = async () => {
     try {
       const snapshot = await getDocs(collection(db, "posts"));
       // Перевіряємо у консолі отримані дані
       // snapshot.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
+
       if (snapshot.docs.length > 0) {
-        setPosts(
+        await setPosts(
           snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
@@ -50,23 +54,11 @@ export default function PostsScreen({ route }) {
         );
       }
       return;
-      // console.log("posts", posts);
     } catch (error) {
       console.log(error);
       throw error;
     }
   };
-
-  useEffect(() => {
-    getAllPosts();
-  }, []);
-
-  // useEffect(() => {
-  //   if (route.params) {
-  //     setPosts((prevState) => [...prevState, route.params]);
-  //   }
-  // }, [route.params]);
-  // console.log("posts--->", posts);
 
   const onMapScreen = (latitude, longitude) => {
     navigation.navigate("Map", {
@@ -74,10 +66,6 @@ export default function PostsScreen({ route }) {
       longitude,
     });
   };
-
-  // const onCommentsScreen = (uri) => {
-  //   navigation.navigate("Comments", { uri });
-  // };
 
   return (
     <View style={[styles.container, { width, height }]}>
@@ -118,7 +106,6 @@ export default function PostsScreen({ route }) {
                       postId: item.id,
                       uri: item.photo,
                     });
-                    // onCommentsScreen(item.photo.uri);
                   }}
                 >
                   <MessageCircle

@@ -101,10 +101,10 @@ export default function CreatePostsScreen() {
     setPhoto("");
   };
 
+  // upload post to database
   const upLoadPostToServer = async () => {
     try {
       photoURL = await uploadPhotoToServer();
-      
       await addDoc(collection(db, "posts"), {
         photo: photoURL,
         fotoTitle: state.fotoTitle,
@@ -114,13 +114,13 @@ export default function CreatePostsScreen() {
         userId,
         login,
       });
-      // console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
       throw e;
     }
   };
 
+  // upload photo to storage
   const uploadPhotoToServer = async () => {
     try {
       const response = await fetch(photo);
