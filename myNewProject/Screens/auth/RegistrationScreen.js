@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import {
   StyleSheet,
   View,
@@ -25,6 +26,7 @@ import { Plus } from "react-native-feather";
 const { width, height } = Dimensions.get("screen");
 
 const initialState = {
+  avatar: null,
   login: "",
   email: "",
   password: "",
@@ -37,7 +39,7 @@ export default function RegistrationScreen() {
   const dispatch = useDispatch();
 
   const [isFocused, setIsFocused] = useState({
-    name: false,
+    login: false,
     email: false,
     password: false,
   });
@@ -70,6 +72,7 @@ export default function RegistrationScreen() {
       [textinput]: true,
     });
   };
+
   const handleInputBlur = (textinput) => {
     setIsFocused({
       [textinput]: false,
@@ -77,22 +80,39 @@ export default function RegistrationScreen() {
   };
 
   const onLogin = () => {
-    // if (login === "") {
-    //   return Alert.alert("Login is required");
-    // } else if (email === "") {
-    //   return Alert.alert("Email is required");
-    // } else if (password === "") {
-    //   return Alert.alert("Password is required");
-    // }
+    if (state.login === "") {
+      return Alert.alert("Login is required");
+    } else if (state.email === "") {
+      return Alert.alert("Email is required");
+    } else if (state.password === "") {
+      return Alert.alert("Password is required");
+    }
 
     Keyboard.dismiss();
     setHidePass(true);
     dispatch(authSignUpUser(state));
     setState(initialState);
-
-    // console.log("Credentials", state);
-    // setIsLoggedIn(true);
   };
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setState((prevState) => ({ ...prevState, avatar: result.assets[0].uri }));
+      // console.log(state.avatar);
+      // setImage(result.uri);
+    }
+  };
+
+  const deleteAvatar = () => {
+    setState((prevState) => ({ ...prevState, avatar: null }));
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -125,12 +145,30 @@ export default function RegistrationScreen() {
             }
           >
             <View style={styles.boxFoto}>
-              <TouchableOpacity
-                style={styles.boxFotoBtn}
-                // onPress={}
-              >
-                <Plus stroke="#FF6C00" strokeWidth={1} width={20} height={20} />
-              </TouchableOpacity>
+              <Image style={styles.avatarFoto} source={{ uri: state.avatar }} />
+              {state.avatar ? (
+                <TouchableOpacity
+                  style={styles.boxFotoDeleteBtn}
+                  onPress={deleteAvatar}
+                >
+                  <Plus
+                    stroke="#BDBDBD"
+                    strokeWidth={1}
+                    width={20}
+                    height={20}
+                    style={{ transform: [{ rotate: "45deg" }] }}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.boxFotoBtn} onPress={pickImage}>
+                  <Plus
+                    stroke="#FF6C00"
+                    strokeWidth={1}
+                    width={20}
+                    height={20}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             <Text style={styles.title}>Registration</Text>
             <View
@@ -251,6 +289,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },
+  avatarFoto: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    left: 0,
+    top: 0,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
   boxFotoBtn: {
     position: "absolute",
     width: 25,
@@ -266,7 +313,21 @@ const styles = StyleSheet.create({
     borderRadius: 25 / 2,
     padding: 11 / 2,
   },
-
+  boxFotoDeleteBtn: {
+    position: "absolute",
+    width: 25,
+    height: 25,
+    left: 106,
+    top: 80,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderColor: "#BDBDBD",
+    borderWidth: 1,
+    borderRadius: 25 / 2,
+    padding: 11 / 2,
+  },
   title: {
     color: "#212121",
     fontFamily: "Roboto-Medium",
