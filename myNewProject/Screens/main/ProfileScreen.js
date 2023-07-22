@@ -39,7 +39,6 @@ import { MapPin, MessageCircle } from "react-native-feather";
 
 export default function ProfileScreen() {
   const [userPosts, setUsersPosts] = useState([]);
-  const [newAvatar, setNewAvatar] = useState(null);
   const { login, userId, photoURL } = useSelector(selectState);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -85,50 +84,33 @@ export default function ProfileScreen() {
       quality: 1,
     });
 
-    if (!result.canceled && result) {
-      setNewAvatar(() => {
-        result.assets[0].uri;
-      });
+    if (!result.canceled) {
+      return result.assets[0].uri;
+    }
+  };
 
-      console.log("result", result);
-      console.log("result.assets[0]", result.assets[0]);
-      console.log("result.assets[0].uri", result.assets[0].uri);
-      console.log("newAvatar", newAvatar);
+  const saveNewAvatar = async () => {
+    const url = await pickImage();
+    // console.log(url);
 
-      // try {
-      if (newAvatar) {
-        const response = await fetch(newAvatar);
-        const file = await response.blob();
-        const uniquePostId = Date.now().toString();
+    if (url) {
+      const response = await fetch(url);
+      const file = await response.blob();
+      const uniquePostId = Date.now().toString();
 
-        const storageRef = sRef(storage, `avatars/${uniquePostId}`);
-        await uploadBytes(storageRef, file);
+      const storageRef = sRef(storage, `avatars/${uniquePostId}`);
+      await uploadBytes(storageRef, file);
 
-        const procesPhoto = await getDownloadURL(storageRef);
-        console.log(procesPhoto);
+      const procesPhoto = await getDownloadURL(storageRef);
+      console.log(procesPhoto);
 
-        await dispatch(updateUserProfile({ photoURL: procesPhoto }));
-
-        // await updateProfile(auth.currentUser, { photoURL: procesPhoto });
-        // if (procesPhoto && procesPhoto !== "") {
-        //   await updateProfile(auth.currentUser, { photoURL: procesPhoto });
-        //   // const currentUser = await auth.currentUser;
-        //   // await dispatch(authUpdateUser(currentUser));
-        // }
-      }
-      // } catch (e) {
-      //   console.error("Error adding foto: ", e);
-      //   throw e;
-      // }
+      await dispatch(updateUserProfile({ photoURL: procesPhoto }));
     }
   };
 
   //deleteAvatar
   const deleteAvatar = async () => {
     dispatch(updateUserProfile({ photoURL: "" }));
-    // await updateProfile(auth.currentUser, { photoURL: "" });
-    // const currentUser = auth.currentUser;
-    // dispatch(authUpdateUser(currentUser));
   };
 
   const isFocused = useIsFocused();
@@ -163,7 +145,7 @@ export default function ProfileScreen() {
               />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.boxFotoBtn} onPress={pickImage}>
+            <TouchableOpacity style={styles.boxFotoBtn} onPress={saveNewAvatar}>
               <Plus stroke="#FF6C00" strokeWidth={1} width={20} height={20} />
             </TouchableOpacity>
           )}
