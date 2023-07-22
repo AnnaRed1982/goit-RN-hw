@@ -34,7 +34,7 @@ export default function PostsScreen({ route }) {
   const navigation = useNavigation();
   const { login, email, photoURL } = useSelector(selectState);
 
-  console.log(photoURL);
+  // console.log(photoURL);
 
   useEffect(() => {
     getAllPosts();
@@ -55,6 +55,7 @@ export default function PostsScreen({ route }) {
           }))
         );
       }
+      //await console.log(posts);
       return;
     } catch (error) {
       console.log(error);
@@ -120,7 +121,7 @@ export default function PostsScreen({ route }) {
                     style={{ transform: [{ rotate: "270deg" }] }}
                   />
                   {/* <Text style={styles.commentsNumber}>
-                    {item.state.comments.length}
+                    {item.comments.length}
                   </Text> */}
                 </TouchableOpacity>
                 <TouchableOpacity

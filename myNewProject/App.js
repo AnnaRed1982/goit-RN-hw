@@ -7,7 +7,7 @@ import { useFonts } from "expo-font"; //fonts
 import * as SplashScreen from "expo-splash-screen"; //fonts
 SplashScreen.preventAutoHideAsync(); //fonts
 
-import { store } from "./redux/store";
+import store from "./redux/store";
 
 import Main from "./components/Main";
 

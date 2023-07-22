@@ -112,25 +112,15 @@ export default function RegistrationScreen() {
 
     if (!result.canceled) {
       setState((prevState) => ({ ...prevState, avatar: result.assets[0].uri }));
-      // console.log(state.avatar);
-      // setImage(result.uri);
+      console.log(state.avatar);
     }
-  };
-
-  const deleteAvatar = () => {
-    setState((prevState) => ({ ...prevState, avatar: null }));
   };
 
   const uploadAvatarToServer = async () => {
     try {
-      // const response = await fetch(state.avatar);
-
-      // if (!response) {
-      //   setState((prevState) => ({ ...prevState, avatar: "" }));
-      //   return;
-      // }
       if (state.avatar) {
-        const file = await state.avatar.blob();
+        const response = await fetch(state.avatar);
+        const file = await response.blob();
         const uniquePostId = Date.now().toString();
 
         const storageRef = sRef(storage, `avatars/${uniquePostId}`);
@@ -146,6 +136,10 @@ export default function RegistrationScreen() {
       console.error("Error adding foto: ", e);
       throw e;
     }
+  };
+
+  const deleteAvatar = () => {
+    setState((prevState) => ({ ...prevState, avatar: null }));
   };
 
   return (

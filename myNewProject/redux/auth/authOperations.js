@@ -8,7 +8,7 @@ import {
 import { auth } from "../../firebase/config";
 import { authSlice } from "./authReducer";
 
-const { updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
+const { authSignOut } = authSlice.actions;
 
 export const authSignUpUser =
   ({ email, password, login, avatar }) =>
@@ -55,18 +55,12 @@ export const authStateChangedUser = () => async (dispatch, getState) => {
   });
 };
 
-// const authStateChanged = async (onChange = () => {}) => {
-//   onAuthStateChanged((user) => {
-//     onChange(user);
-//   });
-// };
-
 export const authSignInUser =
   ({ email, password }) =>
   async (dispatch, getState) => {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
-      console.log(user);
+      // console.log(user);
       // return credentials.user;
     } catch (error) {
       console.log(error.message);
@@ -76,4 +70,31 @@ export const authSignInUser =
 export const authSignOutUser = () => async (dispatch, getState) => {
   await signOut(auth);
   dispatch(authSignOut());
+};
+
+// export const authUpdateUser = (user) => async (dispatch, getState) => {
+//   dispatch(
+//     authSlice.actions.updateUserProfile({
+//       photoURL: user.photoURL,
+//     })
+//   );
+// };
+
+export const updateUserProfile = (update) => async (dispatch, getState) => {
+  const user = auth.currentUser;
+  // якщо такий користувач знайдений
+  if (user) {
+    // оновлюємо його профайл
+    try {
+      await updateProfile(user, update);
+
+      dispatch(
+        authSlice.actions.updateUserProfile({
+          photoURL: user.photoURL,
+        })
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import {
   StyleSheet,
   Image,
@@ -20,18 +21,25 @@ import {
 } from "react-native";
 import { LogOut, Plus } from "react-native-feather";
 
-import { db } from "../../firebase/config";
+import { updateProfile } from "firebase/auth";
+import { db, storage } from "../../firebase/config";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth } from "../../firebase/config";
 
 const { width, height } = Dimensions.get("screen");
 
-import { authSignOutUser } from "../../redux/auth/authOperations";
+import {
+  authSignOutUser,
+  updateUserProfile,
+} from "../../redux/auth/authOperations";
 import { selectState } from "../../redux/auth/authSelectors";
 
 import { MapPin, MessageCircle } from "react-native-feather";
 
 export default function ProfileScreen() {
   const [userPosts, setUsersPosts] = useState([]);
+  const [newAvatar, setNewAvatar] = useState(null);
   const { login, userId, photoURL } = useSelector(selectState);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -68,6 +76,61 @@ export default function ProfileScreen() {
     dispatch(authSignOutUser());
   };
 
+  //get new avatarUrl
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled && result) {
+      setNewAvatar(() => {
+        result.assets[0].uri;
+      });
+
+      console.log("result", result);
+      console.log("result.assets[0]", result.assets[0]);
+      console.log("result.assets[0].uri", result.assets[0].uri);
+      console.log("newAvatar", newAvatar);
+
+      // try {
+      if (newAvatar) {
+        const response = await fetch(newAvatar);
+        const file = await response.blob();
+        const uniquePostId = Date.now().toString();
+
+        const storageRef = sRef(storage, `avatars/${uniquePostId}`);
+        await uploadBytes(storageRef, file);
+
+        const procesPhoto = await getDownloadURL(storageRef);
+        console.log(procesPhoto);
+
+        await dispatch(updateUserProfile({ photoURL: procesPhoto }));
+
+        // await updateProfile(auth.currentUser, { photoURL: procesPhoto });
+        // if (procesPhoto && procesPhoto !== "") {
+        //   await updateProfile(auth.currentUser, { photoURL: procesPhoto });
+        //   // const currentUser = await auth.currentUser;
+        //   // await dispatch(authUpdateUser(currentUser));
+        // }
+      }
+      // } catch (e) {
+      //   console.error("Error adding foto: ", e);
+      //   throw e;
+      // }
+    }
+  };
+
+  //deleteAvatar
+  const deleteAvatar = async () => {
+    dispatch(updateUserProfile({ photoURL: "" }));
+    // await updateProfile(auth.currentUser, { photoURL: "" });
+    // const currentUser = auth.currentUser;
+    // dispatch(authUpdateUser(currentUser));
+  };
+
   const isFocused = useIsFocused();
 
   return (
@@ -85,7 +148,27 @@ export default function ProfileScreen() {
       <View style={styles.gallaryContainer}>
         <View style={styles.boxFoto}>
           <Image style={styles.avatarFoto} source={{ uri: photoURL }} />
-          <TouchableOpacity
+
+          {photoURL ? (
+            <TouchableOpacity
+              style={styles.boxFotoDeleteBtn}
+              onPress={deleteAvatar}
+            >
+              <Plus
+                stroke="#BDBDBD"
+                strokeWidth={1}
+                width={20}
+                height={20}
+                style={{ transform: [{ rotate: "45deg" }] }}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.boxFotoBtn} onPress={pickImage}>
+              <Plus stroke="#FF6C00" strokeWidth={1} width={20} height={20} />
+            </TouchableOpacity>
+          )}
+
+          {/* <TouchableOpacity
             style={styles.boxFotoBtn}
             // onPress={}
           >
@@ -96,7 +179,7 @@ export default function ProfileScreen() {
               height={20}
               style={{ transform: [{ rotate: "45deg" }] }}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <TouchableOpacity style={styles.logOutBtn} onPress={signOut}>
           <LogOut
@@ -207,6 +290,21 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   boxFotoBtn: {
+    position: "absolute",
+    width: 25,
+    height: 25,
+    left: 106,
+    top: 80,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderColor: "#FF6C00",
+    borderWidth: 1,
+    borderRadius: 25 / 2,
+    padding: 11 / 2,
+  },
+  boxFotoDeleteBtn: {
     position: "absolute",
     width: 25,
     height: 25,
