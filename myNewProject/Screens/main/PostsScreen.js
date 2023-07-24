@@ -3,7 +3,13 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 import { db } from "../../firebase/config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, ref } from "firebase/firestore";
+import {
+  useCollection,
+  useCollectionData,
+  useDocument,
+  useDocumentData,
+} from "react-firebase-hooks/firestore";
 
 import {
   StyleSheet,
@@ -33,8 +39,7 @@ export default function PostsScreen({ route }) {
   const [posts, setPosts] = useState([]);
   const navigation = useNavigation();
   const { login, email, photoURL } = useSelector(selectState);
-
-  // console.log(photoURL);
+  const [comments, loading, error] = useCollection(collection(db, "posts"));
 
   useEffect(() => {
     getAllPosts();
@@ -42,21 +47,43 @@ export default function PostsScreen({ route }) {
 
   const getAllPosts = async () => {
     try {
-      const snapshot = await getDocs(collection(db, "posts"));
+      const collectionPosts = await getDocs(collection(db, "posts"));
 
-      // Перевіряємо у консолі отримані дані
-      // snapshot.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
+      const collectionPostArray = [];
 
-      if (snapshot.docs.length > 0) {
-        setPosts(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
+      for (const post of collectionPosts.docs) {
+        // Reference to the subcollection "childCollection" inside each parent document
+        const commentCollectionRef = doc(db, "posts", post.id);
+
+        // Fetch subcollection documents
+        const commentCollection = await getDocs(
+          collection(commentCollectionRef, "comments")
         );
+
+        // Create an object containing the parent document data and the subcollection data
+        const postData = {
+          id: post.id,
+          ...post.data(),
+          commentsCount: commentCollection.docs.map((childDoc) => ({
+            data: childDoc.data(),
+          })),
+        };
+
+        collectionPostArray.push({
+          id: postData.id,
+          fotoLocation: postData.fotoLocation,
+          fotoTitle: postData.fotoTitle,
+          locationLatitude: postData.locationLatitude,
+          locationLongitude: postData.locationLongitude,
+          login: postData.login,
+          photo: postData.photo,
+          userId: postData.userId,
+          commentsCount: postData.commentsCount.length,
+        });
       }
-      //await console.log(posts);
-      return;
+
+      // Set the state with the fetched data
+      setPosts(collectionPostArray);
     } catch (error) {
       console.log(error);
       throw error;
@@ -69,6 +96,14 @@ export default function PostsScreen({ route }) {
       longitude,
     });
   };
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   return (
     <View style={[styles.container, { width, height }]}>
@@ -102,7 +137,6 @@ export default function PostsScreen({ route }) {
                 }}
               />
               <Text style={styles.fotoTitle}>{item.fotoTitle}</Text>
-
               <View style={styles.fotoDetails}>
                 <TouchableOpacity
                   style={styles.comments}
@@ -120,9 +154,10 @@ export default function PostsScreen({ route }) {
                     height={24}
                     style={{ transform: [{ rotate: "270deg" }] }}
                   />
-                  {/* <Text style={styles.commentsNumber}>
-                    {item.comments.length}
-                  </Text> */}
+                  <Text style={styles.commentsNumber}>
+                    {/* {new Date(Date.now()).toISOString()} */}
+                    {item.commentsCount}
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.fotoMap}

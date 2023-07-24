@@ -90,6 +90,9 @@ export const updateUserProfile = (update) => async (dispatch, getState) => {
 
       dispatch(
         authSlice.actions.updateUserProfile({
+          userId: user.uid,
+          login: user.displayName,
+          email: user.email,
           photoURL: user.photoURL,
         })
       );

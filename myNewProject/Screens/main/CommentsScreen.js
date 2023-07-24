@@ -57,6 +57,7 @@ export default function CommentsScreen({ route }) {
 
   //get all comments
   const getAllComments = async () => {
+    // console.log(new Date(Date.now()).toISOString());
     try {
       const postsCollectionRef = doc(db, "posts", postId);
       const snapshot = await getDocs(
