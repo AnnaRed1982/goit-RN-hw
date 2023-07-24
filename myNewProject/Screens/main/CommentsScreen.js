@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { db } from "../../firebase/config";
 import { collection, addDoc, getDocs, doc } from "firebase/firestore";
 
+import dayjs from "dayjs";
+
 import {
   StyleSheet,
   Image,
@@ -30,7 +32,7 @@ const { width, height } = Dimensions.get("screen");
 
 export default function CommentsScreen({ route }) {
   const { postId, uri } = route.params;
-  const { login } = useSelector(selectState);
+  const { login, photoURL, userId } = useSelector(selectState);
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
 
@@ -46,6 +48,9 @@ export default function CommentsScreen({ route }) {
       await addDoc(collection(postsCollectionRef, "comments"), {
         login,
         comment,
+        avatarURL: photoURL,
+        userId,
+        createdAt: new Date(Date.now()).toISOString(),
       });
       setComment("");
       return;
@@ -105,11 +110,25 @@ export default function CommentsScreen({ route }) {
                 <View
                   style={{
                     marginBottom: 32,
-                    justifyContent: "center",
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start",
+                    flex: 1,
+                    flexDirection: "row",
+                    gap: 16,
                   }}
                 >
-                  <Text style={styles.comment}>{item.login}</Text>
-                  <Text style={styles.comment}>{item.comment}</Text>
+                  <Image
+                    source={{ uri: item.avatarURL }}
+                    style={styles.avatar}
+                  />
+                  <View style={styles.commentContainer}>
+                    <Text style={styles.commentAuthor}>{item.login}:</Text>
+                    <Text style={styles.comment}>{item.comment}</Text>
+                    <Text style={styles.commentTime}>
+                      {dayjs(item.createdAt).format("DD MM, YYYY")} |{" "}
+                      {dayjs(item.createdAt).format("HH:MM")}
+                    </Text>
+                  </View>
                 </View>
               );
             }}
@@ -161,16 +180,55 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 32,
   },
+  avatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 28,
+  },
+  commentContainer: {
+    // border-radius: 0px 6px 6px 6px;
+    borderBottomLeftRadius: 6,
+    borderBottomRightRadius: 6,
+    // borderTopLeftRadius: 6,
+    borderTopRightRadius: 6,
+    paddingHorizontal: 16,
+    paddingTop: 4,
+    paddingBottom: 16,
+    width: width - 28 - 16 - 16 - 16,
+    backgroundColor: "#F6F6F6",
+    //backgroundColor: "rgba(0, 0, 0, 0.03)",
+  },
+  commentAuthor: {
+    color: "#212121",
+    fontFamily: "Roboto-Bold",
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 3,
+    textDecorationLine: "underline",
+  },
+  comment: {
+    color: "#212121",
+    fontFamily: "Roboto-Regular",
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 8,
+  },
+  commentTime: {
+    color: "#BDBDBD",
+    fontFamily: "Roboto-Regular",
+    fontSize: 10,
+    lineHeight: 12,
+  },
   form: {
     position: "relative",
   },
-
   input: {
     backgroundColor: "#F6F6F6",
     borderColor: "#E8E8E8",
     borderWidth: 1,
     borderRadius: 100,
-    paddingHorizontal: 16,
+    paddingLeft: 16,
+    paddingRight: 50,
     paddingVertical: 16,
     fontFamily: "Inter-Medium",
     fontSize: 16,
@@ -187,12 +245,5 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 34 / 2,
     backgroundColor: "#FF6C00",
-  },
-  comment: {
-    color: "#212121",
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    textDecorationLine: "underline",
   },
 });
