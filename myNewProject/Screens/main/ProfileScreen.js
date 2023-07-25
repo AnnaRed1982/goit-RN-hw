@@ -45,7 +45,7 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     getUserPostsByUserId();
-  }, []);
+  }, [userPosts]);
 
   //get user's posts by user id
   const getUserPostsByUserId = async () => {

@@ -68,7 +68,20 @@ export const authSignInUser =
   };
 
 export const authSignOutUser = () => async (dispatch, getState) => {
-  await signOut(auth);
+  // await signOut(auth);
+
+  try {
+    // Check if a user is logged in before attempting to log them out
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      await signOut(auth);
+      // Do additional cleanup or navigation if needed
+    } else {
+      console.log("User is not logged in.");
+    }
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
   dispatch(authSignOut());
 };
 

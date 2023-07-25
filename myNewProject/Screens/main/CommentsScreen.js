@@ -2,9 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import { db } from "../../firebase/config";
-import { collection, addDoc, getDocs, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  query,
+  orderBy,
+} from "firebase/firestore";
 
 import dayjs from "dayjs";
+import "dayjs/locale/en";
 
 import {
   StyleSheet,
@@ -38,7 +46,7 @@ export default function CommentsScreen({ route }) {
 
   useEffect(() => {
     getAllComments();
-  }, []);
+  }, [allComments, comment]);
 
   //add comment
   const addComment = async () => {
@@ -65,8 +73,9 @@ export default function CommentsScreen({ route }) {
     // console.log(new Date(Date.now()).toISOString());
     try {
       const postsCollectionRef = doc(db, "posts", postId);
+
       const snapshot = await getDocs(
-        collection(postsCollectionRef, "comments")
+        query(collection(postsCollectionRef, "comments"), orderBy("createdAt"))
       );
 
       if (snapshot.docs.length > 0) {
@@ -77,11 +86,72 @@ export default function CommentsScreen({ route }) {
           }))
         );
       }
+
+      // setAllComments(sortedComments);
+      // setAllComments(allComments.sort((a, b) => a.createdAt - b.createdAt));
       return;
     } catch (error) {
       console.log(error);
       throw error;
     }
+  };
+
+  //function for rendering posts in different order:
+  const renderItem = ({ item }) => {
+    // Condition to render the item
+    if (item.userId === userId) {
+      return (
+        <View
+          style={{
+            marginBottom: 32,
+            flex: 1,
+            flexDirection: "row",
+            gap: 16,
+          }}
+        >
+          <View
+            style={[
+              styles.commentContainer,
+              { borderTopLeftRadius: 6, borderTopRightRadius: 0 },
+            ]}
+          >
+            <Text style={[styles.commentAuthor, { textAlign: "right" }]}>
+              {item.login}:
+            </Text>
+            <Text style={[styles.comment, { textAlign: "right" }]}>
+              {item.comment}
+            </Text>
+            <Text style={[styles.commentTime, { textAlign: "left" }]}>
+              {dayjs(item.createdAt).format("DD MMMM, YYYY")} |{" "}
+              {dayjs(item.createdAt).format("HH:mm")}
+            </Text>
+          </View>
+          <Image source={{ uri: item.avatarURL }} style={styles.avatar} />
+        </View>
+      );
+    }
+    return (
+      <View
+        style={{
+          marginBottom: 32,
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          flex: 1,
+          flexDirection: "row",
+          gap: 16,
+        }}
+      >
+        <Image source={{ uri: item.avatarURL }} style={styles.avatar} />
+        <View style={styles.commentContainer}>
+          <Text style={styles.commentAuthor}>{item.login}:</Text>
+          <Text style={styles.comment}>{item.comment}</Text>
+          <Text style={styles.commentTime}>
+            {dayjs(item.createdAt).format("DD MMMM, YYYY")} |{" "}
+            {dayjs(item.createdAt).format("HH:mm")}
+          </Text>
+        </View>
+      </View>
+    );
   };
 
   return (
@@ -105,33 +175,7 @@ export default function CommentsScreen({ route }) {
           <FlatList
             data={allComments}
             keyExtractor={(item, indx) => indx.toString()}
-            renderItem={({ item }) => {
-              return (
-                <View
-                  style={{
-                    marginBottom: 32,
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    flex: 1,
-                    flexDirection: "row",
-                    gap: 16,
-                  }}
-                >
-                  <Image
-                    source={{ uri: item.avatarURL }}
-                    style={styles.avatar}
-                  />
-                  <View style={styles.commentContainer}>
-                    <Text style={styles.commentAuthor}>{item.login}:</Text>
-                    <Text style={styles.comment}>{item.comment}</Text>
-                    <Text style={styles.commentTime}>
-                      {dayjs(item.createdAt).format("DD MM, YYYY")} |{" "}
-                      {dayjs(item.createdAt).format("HH:MM")}
-                    </Text>
-                  </View>
-                </View>
-              );
-            }}
+            renderItem={renderItem}
           />
           {/* /////////////////////////////////////////////////////////////////////////// */}
           <KeyboardAvoidingView
@@ -143,6 +187,7 @@ export default function CommentsScreen({ route }) {
                 onChangeText={(value) => setComment(value)}
                 placeholder="Leave comment..."
                 placeholderTextColor="#BDBDBD"
+                multiline={true}
                 style={styles.input}
               />
               <TouchableOpacity onPress={addComment}>
@@ -196,7 +241,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     width: width - 28 - 16 - 16 - 16,
     backgroundColor: "#F6F6F6",
-    //backgroundColor: "rgba(0, 0, 0, 0.03)",
+    // backgroundColor: "rgba(0, 0, 0, 0.03)",
   },
   commentAuthor: {
     color: "#212121",
@@ -218,6 +263,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 10,
     lineHeight: 12,
+    textAlign: "right",
   },
   form: {
     position: "relative",

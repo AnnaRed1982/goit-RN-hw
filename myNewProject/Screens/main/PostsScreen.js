@@ -43,7 +43,7 @@ export default function PostsScreen({ route }) {
 
   useEffect(() => {
     getAllPosts();
-  }, []);
+  }, [posts]);
 
   const getAllPosts = async () => {
     try {
