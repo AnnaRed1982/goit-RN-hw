@@ -268,8 +268,8 @@ export default function ProfileScreen() {
                         </>
                       )}
                     </TouchableOpacity>
-                    <TouchableOpacity
-                    // onPress={}
+                    {/* <TouchableOpacity
+                     onPress={}
                     >
                       <ThumbsUp
                         stroke="#FF6C00"
@@ -277,7 +277,7 @@ export default function ProfileScreen() {
                         width={20}
                         height={20}
                       />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                   </View>
                   <TouchableOpacity
                     style={styles.fotoMap}
