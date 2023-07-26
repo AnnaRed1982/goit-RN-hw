@@ -60,8 +60,6 @@ export const authSignInUser =
   async (dispatch, getState) => {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
-      // console.log(user);
-      // return credentials.user;
     } catch (error) {
       console.log(error.message);
     }
@@ -84,14 +82,6 @@ export const authSignOutUser = () => async (dispatch, getState) => {
   }
   dispatch(authSignOut());
 };
-
-// export const authUpdateUser = (user) => async (dispatch, getState) => {
-//   dispatch(
-//     authSlice.actions.updateUserProfile({
-//       photoURL: user.photoURL,
-//     })
-//   );
-// };
 
 export const updateUserProfile = (update) => async (dispatch, getState) => {
   const user = auth.currentUser;

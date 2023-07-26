@@ -66,7 +66,6 @@ export default function CreatePostsScreen() {
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
-    // console.log("location", location);
 
     setState((prevState) => ({
       ...prevState,
@@ -88,7 +87,6 @@ export default function CreatePostsScreen() {
 
   const onPost = async () => {
     Keyboard.dismiss();
-    // console.log("Foto", state);
     setState(initialState);
     setPhoto("");
 

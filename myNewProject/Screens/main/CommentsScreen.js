@@ -70,7 +70,6 @@ export default function CommentsScreen({ route }) {
 
   //get all comments
   const getAllComments = async () => {
-    // console.log(new Date(Date.now()).toISOString());
     try {
       const postsCollectionRef = doc(db, "posts", postId);
 
@@ -86,10 +85,6 @@ export default function CommentsScreen({ route }) {
           }))
         );
       }
-
-      // setAllComments(sortedComments);
-      // setAllComments(allComments.sort((a, b) => a.createdAt - b.createdAt));
-      return;
     } catch (error) {
       console.log(error);
       throw error;
@@ -231,10 +226,8 @@ const styles = StyleSheet.create({
     borderRadius: 28,
   },
   commentContainer: {
-    // border-radius: 0px 6px 6px 6px;
     borderBottomLeftRadius: 6,
     borderBottomRightRadius: 6,
-    // borderTopLeftRadius: 6,
     borderTopRightRadius: 6,
     paddingHorizontal: 16,
     paddingTop: 4,

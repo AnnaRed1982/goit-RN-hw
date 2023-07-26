@@ -21,8 +21,6 @@ import {
 import { useDispatch } from "react-redux";
 import { authSignInUser } from "../../redux/auth/authOperations";
 
-// import { useUser } from "../../services/userContext";
-
 const { width, height } = Dimensions.get("screen");
 
 const initialState = {
@@ -40,8 +38,6 @@ export default function LoginScreen() {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false); //keyboard
 
   const navigation = useNavigation();
-  // const { setIsLoggedIn, setEmail, setPassword, email, password, login } =
-  //   useUser();
 
   const dispatch = useDispatch();
 
@@ -77,19 +73,16 @@ export default function LoginScreen() {
   };
 
   const onLogin = () => {
-    // if (email === "") {
-    //   return Alert.alert("Email is required");
-    // } else if (password === "") {
-    //   return Alert.alert("Password is required");
-    // }
+    if (state.email === "") {
+      return Alert.alert("Email is required");
+    } else if (state.password === "") {
+      return Alert.alert("Password is required");
+    }
 
     Keyboard.dismiss();
     dispatch(authSignInUser(state));
     setHidePass(true);
     setState(initialState);
-
-    // setIsLoggedIn(true);
-    // console.log("Credentials", state);
   };
 
   return (
@@ -186,8 +179,7 @@ export default function LoginScreen() {
                 isKeyboardActive ? [{ display: "none" }] : [{ display: "flex" }]
               }
               onPress={() => {
-                // setEmail("");
-                // setPassword("");
+                setState(initialState);
                 navigation.navigate("Registration");
               }}
             >

@@ -13,12 +13,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { authSlice } from "./auth/authReducer";
 
-// const authPersistConfig = {
-//   key: "auth",
-//   AsyncStorage,
-//   whitelist: ["token"],
-// };
-
 const rootReducer = combineReducers({
   [authSlice.name]: authSlice.reducer,
 });
@@ -43,9 +37,3 @@ const store = configureStore({
 
 export const persistor = persistStore(store);
 export default store;
-
-// const persistor = persistStore(store);
-
-// export default { store, persistor };
-
-// export const store = configureStore({ reducer: rootReducer });

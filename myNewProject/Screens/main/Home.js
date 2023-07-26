@@ -2,14 +2,12 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import PostsScreen from "./PostsScreen";
 import CommentsScreen from "./CommentsScreen";
 import MapScreen from "./MapScreen";
 
 import { authSignOutUser } from "../../redux/auth/authOperations";
-// import { useUser } from "../../services/userContext";
 
 import {
   StyleSheet,

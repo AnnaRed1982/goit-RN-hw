@@ -147,17 +147,36 @@ export default function PostsScreen({ route }) {
                     });
                   }}
                 >
-                  <MessageCircle
-                    stroke="#BDBDBD"
-                    strokeWidth={1}
-                    width={24}
-                    height={24}
-                    style={{ transform: [{ rotate: "270deg" }] }}
-                  />
-                  <Text style={styles.commentsNumber}>
-                    {/* {new Date(Date.now()).toISOString()} */}
-                    {item.commentsCount}
-                  </Text>
+                  {item.commentsCount > 0 ? (
+                    <>
+                      <MessageCircle
+                        stroke="#FF6C00"
+                        fill="#FF6C00"
+                        strokeWidth={1}
+                        width={24}
+                        height={24}
+                        style={{ transform: [{ rotate: "270deg" }] }}
+                      />
+                      <Text
+                        style={[styles.commentsNumber, { color: "#212121" }]}
+                      >
+                        {item.commentsCount}
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <MessageCircle
+                        stroke="#BDBDBD"
+                        strokeWidth={1}
+                        width={24}
+                        height={24}
+                        style={{ transform: [{ rotate: "270deg" }] }}
+                      />
+                      <Text style={styles.commentsNumber}>
+                        {item.commentsCount}
+                      </Text>
+                    </>
+                  )}
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.fotoMap}

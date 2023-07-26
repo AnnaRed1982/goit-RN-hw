@@ -9,19 +9,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAz1DyeGS_Y_4OCNAExmy2X632scrDRaro",
-  authDomain: "social-network-rn2.firebaseapp.com",
-  projectId: "social-network-rn2",
-  storageBucket: "social-network-rn2.appspot.com",
-  messagingSenderId: "6407028630",
-  appId: "1:6407028630:web:42a37b346a41787644a7b7",
-
-  // apiKey: "AIzaSyCorYQ2OjT6iQN3b5IkyQT9PS8Weoak3QM",
-  // authDomain: "social-network-rn.firebaseapp.com",
-  // projectId: "social-network-rn",
-  // storageBucket: "social-network-rn.appspot.com",
-  // messagingSenderId: "977248209365",
-  // appId: "1:977248209365:web:7a85a902325efcf239155c",
+  apiKey: "AIzaSyBmclIX-XLc335e5C9TMoCIBrYFk2TCajo",
+  authDomain: "rn-socialnetwork--3.firebaseapp.com",
+  projectId: "rn-socialnetwork--3",
+  storageBucket: "rn-socialnetwork--3.appspot.com",
+  messagingSenderId: "260516306731",
+  appId: "1:260516306731:web:1ba524e04ba5b1752f6f6e",
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

@@ -112,7 +112,6 @@ export default function RegistrationScreen() {
 
     if (!result.canceled) {
       setState((prevState) => ({ ...prevState, avatar: result.assets[0].uri }));
-      // console.log(state.avatar);
     }
   };
 
@@ -281,9 +280,6 @@ export default function RegistrationScreen() {
                 isKeyboardActive ? [{ display: "none" }] : [{ display: "flex" }]
               }
               onPress={() => {
-                // setLogin("");
-                // setEmail("");
-                // setPassword("");
                 navigation.navigate("Login");
               }}
             >

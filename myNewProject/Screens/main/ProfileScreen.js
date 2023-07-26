@@ -19,13 +19,10 @@ import {
   Text,
   Dimensions,
 } from "react-native";
-import { LogOut, Plus } from "react-native-feather";
 
-import { updateProfile } from "firebase/auth";
 import { db, storage } from "../../firebase/config";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, doc } from "firebase/firestore";
 import { ref as sRef, uploadBytes, getDownloadURL } from "firebase/storage";
-import { auth } from "../../firebase/config";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -35,7 +32,13 @@ import {
 } from "../../redux/auth/authOperations";
 import { selectState } from "../../redux/auth/authSelectors";
 
-import { MapPin, MessageCircle } from "react-native-feather";
+import {
+  MapPin,
+  MessageCircle,
+  LogOut,
+  Plus,
+  ThumbsUp,
+} from "react-native-feather";
 
 export default function ProfileScreen() {
   const [userPosts, setUsersPosts] = useState([]);
@@ -53,18 +56,42 @@ export default function ProfileScreen() {
       const snapshot = await getDocs(
         query(collection(db, "posts"), where("userId", "==", userId))
       );
-      // console.log("snapshot", snapshot);
-      // console.log("userPosts", userPosts);
 
-      if (snapshot.docs.length > 0) {
-        setUsersPosts(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
+      const collectionPostArray = [];
+
+      for (const post of snapshot.docs) {
+        // Reference to the subcollection "childCollection" inside each parent document
+        const commentCollectionRef = doc(db, "posts", post.id);
+
+        // Fetch subcollection documents
+        const commentCollection = await getDocs(
+          collection(commentCollectionRef, "comments")
         );
+
+        // Create an object containing the parent document data and the subcollection data
+        const postData = {
+          id: post.id,
+          ...post.data(),
+          commentsCount: commentCollection.docs.map((childDoc) => ({
+            data: childDoc.data(),
+          })),
+        };
+
+        collectionPostArray.push({
+          id: postData.id,
+          fotoLocation: postData.fotoLocation,
+          fotoTitle: postData.fotoTitle,
+          locationLatitude: postData.locationLatitude,
+          locationLongitude: postData.locationLongitude,
+          login: postData.login,
+          photo: postData.photo,
+          userId: postData.userId,
+          commentsCount: postData.commentsCount.length,
+        });
       }
-      return;
+
+      // Set the state with the fetched data
+      setUsersPosts(collectionPostArray);
     } catch (error) {
       console.log(error);
       throw error;
@@ -91,7 +118,6 @@ export default function ProfileScreen() {
 
   const saveNewAvatar = async () => {
     const url = await pickImage();
-    // console.log(url);
 
     if (url) {
       const response = await fetch(url);
@@ -198,26 +224,61 @@ export default function ProfileScreen() {
                 <Text style={styles.fotoTitle}>{item.fotoTitle}</Text>
 
                 <View style={styles.fotoDetails}>
-                  <TouchableOpacity
-                    style={styles.comments}
-                    onPress={() => {
-                      navigation.navigate("Comments", {
-                        postId: item.id,
-                        uri: item.photo,
-                      });
-                    }}
-                  >
-                    <MessageCircle
-                      stroke="#BDBDBD"
-                      strokeWidth={1}
-                      width={24}
-                      height={24}
-                      style={{ transform: [{ rotate: "270deg" }] }}
-                    />
-                    {/* <Text style={styles.commentsNumber}>
-                    {item.state.comments.length}
-                  </Text> */}
-                  </TouchableOpacity>
+                  <View style={{ flex: 1, flexDirection: "row", gap: 24 }}>
+                    <TouchableOpacity
+                      style={styles.comments}
+                      onPress={() => {
+                        navigation.navigate("Comments", {
+                          postId: item.id,
+                          uri: item.photo,
+                        });
+                      }}
+                    >
+                      {item.commentsCount > 0 ? (
+                        <>
+                          <MessageCircle
+                            stroke="#FF6C00"
+                            fill="#FF6C00"
+                            strokeWidth={1}
+                            width={24}
+                            height={24}
+                            style={{ transform: [{ rotate: "270deg" }] }}
+                          />
+                          <Text
+                            style={[
+                              styles.commentsNumber,
+                              { color: "#212121" },
+                            ]}
+                          >
+                            {item.commentsCount}
+                          </Text>
+                        </>
+                      ) : (
+                        <>
+                          <MessageCircle
+                            stroke="#BDBDBD"
+                            strokeWidth={1}
+                            width={24}
+                            height={24}
+                            style={{ transform: [{ rotate: "270deg" }] }}
+                          />
+                          <Text style={styles.commentsNumber}>
+                            {item.commentsCount}
+                          </Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                    // onPress={}
+                    >
+                      <ThumbsUp
+                        stroke="#FF6C00"
+                        strokeWidth={1}
+                        width={20}
+                        height={20}
+                      />
+                    </TouchableOpacity>
+                  </View>
                   <TouchableOpacity
                     style={styles.fotoMap}
                     onPress={() =>
